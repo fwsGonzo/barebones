@@ -1,6 +1,7 @@
 
 OUT=mykernel
 C_FILES=src/kernel_start.c src/serial1.c src/c_abi.c
+CPP_FILES=src/test.cpp
 ASM_FILES=src/start.asm
 
 #CC=clang-4.0
@@ -8,12 +9,15 @@ ASM_FILES=src/start.asm
 COPT=-m32 -msse3
 
 WARNS=-Wall -Wextra -pedantic
-CFLAGS=-ffreestanding -nostdlib -std=gnu11 -MMD -fstack-protector-strong $(COPT) $(WARNS)
+COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(COPT) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 -N --strip-all --script=linker.ld
+CFLAGS=-std=gnu11 $(COMMON)
+CXXFLAGS=-std=c++14 $(COMMON)
 
 COBJ=$(C_FILES:.c=.o)
+CXXOBJ=$(CPP_FILES:.cpp=.o)
 ASMOBJ=$(ASM_FILES:.asm=.o)
-DEPS=$(ASMOBJ:.o=.d) $(COBJ:.o=.d)
+DEPS=$(CXXOBJ:.o=.d) $(COBJ:.o=.d)
 
 .PHONY: clean all
 
@@ -23,10 +27,13 @@ DEPS=$(ASMOBJ:.o=.d) $(COBJ:.o=.d)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(COBJ) $(ASMOBJ)
-	$(LD) $(LDFLAGS) $(COBJ) $(ASMOBJ) -o $(OUT)
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+all: $(COBJ) $(CXXOBJ) $(ASMOBJ)
+	$(LD) $(LDFLAGS) $(COBJ) $(CXXOBJ) $(ASMOBJ) -o $(OUT)
 
 clean:
-	$(RM) $(DEPS) $(OUT) $(COBJ) $(ASMOBJ)
+	$(RM) $(OUT) $(COBJ) $(CXXOBJ) $(ASMOBJ) $(DEPS)
 
 -include $(DEPS)

@@ -25,5 +25,8 @@ void kernel_start(uint32_t eax, uint32_t ebx)
   __serial_print1("Multiboot EBX: 0x");
       print_hex32(ebx); __serial_print1("\n");
 
+  extern void test_cpp();
+  test_cpp();
+
   __serial_print1("Press Ctrl+A -> X to close\n");
 }
