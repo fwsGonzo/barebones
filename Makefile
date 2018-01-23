@@ -1,12 +1,14 @@
 
 OUT=mykernel
-C_FILES=src/main.c src/serial1.c
+C_FILES=src/kernel_start.c src/serial1.c
 ASM_FILES=src/start.asm
 
-CC=clang-4.0
+#CC=clang-4.0
+#COPT=-target i686-linux-pc-gnu -march=native
+COPT=-m32 -msse3
+
 WARNS=-Wall -Wextra -pedantic
-COPT=-target i686-linux-pc-gnu -march=native
-CFLAGS=-ffreestanding -std=gnu11 -MMD $(COPT) $(WARNS)
+CFLAGS=-ffreestanding -nostdlib -std=gnu11 -MMD $(COPT) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 -N --strip-all --script=linker.ld
 
 COBJ=$(C_FILES:.c=.o)
@@ -22,7 +24,7 @@ DEPS=$(ASMOBJ:.o=.d) $(COBJ:.o=.d)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(COBJ) $(ASMOBJ)
-	ld $(LDFLAGS) $(COBJ) $(ASMOBJ) -o $(OUT)
+	$(LD) $(LDFLAGS) $(COBJ) $(ASMOBJ) -o $(OUT)
 
 clean:
 	$(RM) $(DEPS) $(OUT) $(COBJ) $(ASMOBJ)

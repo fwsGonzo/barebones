@@ -5,7 +5,7 @@ extern void __serial_print1(const char*);
 
 void print_hex32(uint32_t val)
 {
-  const char lut[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+  const char lut[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                       '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
   char buffer[9] = {'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 0};
   for (int i = 0; i < 4; i++)
