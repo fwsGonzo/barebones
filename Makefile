@@ -1,6 +1,6 @@
 
 OUT=mykernel
-C_FILES=src/kernel_start.c src/serial1.c
+C_FILES=src/kernel_start.c src/serial1.c src/c_abi.c
 ASM_FILES=src/start.asm
 
 #CC=clang-4.0
@@ -8,7 +8,7 @@ ASM_FILES=src/start.asm
 COPT=-m32 -msse3
 
 WARNS=-Wall -Wextra -pedantic
-CFLAGS=-ffreestanding -nostdlib -std=gnu11 -MMD $(COPT) $(WARNS)
+CFLAGS=-ffreestanding -nostdlib -std=gnu11 -MMD -fstack-protector-strong $(COPT) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 -N --strip-all --script=linker.ld
 
 COBJ=$(C_FILES:.c=.o)
