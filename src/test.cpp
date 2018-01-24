@@ -1,21 +1,19 @@
-#include <cstddef>
-#include <cstdint>
 #include <cassert>
-extern "C" void __serial_print1(const char*);
+#include <kprint.hpp>
 
 struct Test
 {
   Test(int x) {
     this->value = x;
   }
-
   int value;
 };
 
 extern "C"
 void test_cpp()
 {
-  __serial_print1("Hello from freestanding C++!\n");
-  Test test(2);
-  assert(test.value == 2);
+  auto* t = new Test(2);
+  assert(t->value == 2);
+  delete t;
+  kprintf("Hello from freestanding C++!\n");
 }

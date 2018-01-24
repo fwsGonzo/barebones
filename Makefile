@@ -1,14 +1,19 @@
+# kernel binary
+OUT = mykernel
+# .c files (add your own!)
+C_FILES = src/kernel/kernel_start.c \
+					src/hw/serial1.c \
+					src/crt/c_abi.c src/crt/heap.c src/crt/malloc.c \
+				  src/prnt/print.c src/prnt/mini-printf.c
+# .cpp files
+CPP_FILES=src/test.cpp src/crt/cxxabi.cpp
+# .asm files for NASM
+ASM_FILES=src/kernel/start.asm
 
-OUT=mykernel
-C_FILES=src/kernel_start.c src/serial1.c src/c_abi.c \
-				 src/prnt/print.c src/prnt/mini-printf.c
-CPP_FILES=src/test.cpp
-ASM_FILES=src/start.asm
-
-OPTIONS=-m32 -msse3
+OPTIONS=-m32 -msse3 -Isrc
 WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
-LDFLAGS=-static -nostdlib -melf_i386 -N --strip-all --script=linker.ld
+LDFLAGS=-static -nostdlib -melf_i386 -n --strip-all --script=linker.ld
 CFLAGS=-std=gnu11 $(COMMON)
 CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)
 

@@ -1,11 +1,11 @@
 #include <stdint.h>
 #include <assert.h>
-#include "print.h"
+#include <kprint.h>
 
 void kernel_start(uint32_t eax, uint32_t ebx)
 {
-  kprintf("------------------\n");
-  kprintf("Hello OSdev world!\n");
+  kprint("------------------\n");
+  kprint("Hello OSdev world!\n");
 
   kprintf("Multiboot EAX: 0x%x\n", eax);
   kprintf("Multiboot EBX: 0x%x\n", ebx);

@@ -1,5 +1,6 @@
+#pragma once
 #include "prnt/mini-printf.h"
-#include "serial.h"
+#include <hw/serial.h>
 
 // better, more familiar way to print!
 extern int kprintf(const char* fmt, ...);

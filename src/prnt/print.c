@@ -1,4 +1,4 @@
-#include "../print.h"
+#include <kprint.h>
 #include <stdarg.h>
 
 char* hex32_to_str(char buffer[], unsigned int val)
