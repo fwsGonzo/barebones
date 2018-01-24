@@ -5,13 +5,13 @@ static const uint16_t port = 0x3F8; // Serial 1
 static inline uint8_t inb(int port)
 {
   int ret;
-  asm volatile ("xorl %eax,%eax");
-  asm volatile ("inb %%dx,%%al":"=a" (ret):"d"(port));
+  __asm__ ("xorl %eax,%eax");
+  __asm__ ("inb %%dx,%%al":"=a" (ret):"d"(port));
   return ret;
 }
 static inline void outb(int port, uint8_t data)
 {
-  asm("outb %%al,%%dx"::"a" (data), "d"(port));
+  __asm__ ("outb %%al,%%dx"::"a" (data), "d"(port));
 }
 
 void __init_serial1()

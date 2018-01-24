@@ -13,7 +13,7 @@ WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(COPT) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 -N --strip-all --script=linker.ld
 CFLAGS=-std=gnu11 $(COMMON)
-CXXFLAGS=-std=c++14 $(COMMON)
+CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)
 
 COBJ=$(C_FILES:.c=.o)
 CXXOBJ=$(CPP_FILES:.cpp=.o)
