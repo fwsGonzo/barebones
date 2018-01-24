@@ -5,12 +5,9 @@ C_FILES=src/kernel_start.c src/serial1.c src/c_abi.c \
 CPP_FILES=src/test.cpp
 ASM_FILES=src/start.asm
 
-#CC=clang-4.0
-#COPT=-target i686-linux-pc-gnu -march=native
-COPT=-m32 -msse3
-
+OPTIONS=-m32 -msse3
 WARNS=-Wall -Wextra -pedantic
-COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(COPT) $(WARNS)
+COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 -N --strip-all --script=linker.ld
 CFLAGS=-std=gnu11 $(COMMON)
 CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)

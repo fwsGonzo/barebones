@@ -1,8 +1,8 @@
 # Barebones multiboot kernel
 
-- Install qemu for qemu-system-x86_64
-- Run with run.sh
 - Intended for beginner OS development
+- Install qemu for qemu-system-x86_64 and gcc-multilib for a 32-bit compiler
+- Run with ./run.sh
 
 ## Features
 
@@ -12,7 +12,10 @@
 - C and C++ global constructors
 - Stack protector support
 
+## Future work
 
+- Build a proper cross-compiler locally and use it to build this project with
+- Create simple page tables and directly enter long mode (64-bit)
 
 ## Validate output
 
