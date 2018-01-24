@@ -3,6 +3,7 @@
 - Intended for beginner OS development
 - Install qemu for qemu-system-x86_64 and gcc-multilib for a 32-bit compiler
 - Run with ./run.sh
+- Use ./build_iso.sh to run on real hardware or a hypervisor like VirtualBox, but keep serial port logging in mind!
 
 ## Features
 

@@ -1,3 +1,5 @@
 *.o
 *.d
 mykernel
+temp_disk
+grub.iso
