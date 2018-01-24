@@ -175,6 +175,13 @@ mini_vsnprintf(char *buffer, unsigned int buffer_len, const char *fmt, va_list v
 					_puts(bf, len, &b);
 					break;
 
+        case 'p':
+          _putc('0', &b);
+          _putc('x', &b);
+					len = mini_itoa(va_arg(va, unsigned int), 16, (ch=='X'), 1, bf, zero_pad);
+					_puts(bf, len, &b);
+					break;
+
 				case 'c' :
 					_putc((char)(va_arg(va, int)), &b);
 					break;
