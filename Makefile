@@ -1,6 +1,7 @@
 
 OUT=mykernel
-C_FILES=src/kernel_start.c src/serial1.c src/c_abi.c
+C_FILES=src/kernel_start.c src/serial1.c src/c_abi.c \
+				 src/prnt/print.c src/prnt/mini-printf.c
 CPP_FILES=src/test.cpp
 ASM_FILES=src/start.asm
 

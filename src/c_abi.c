@@ -1,5 +1,5 @@
 #include <stdint.h>
-extern void __serial_print1(const char*);
+#include "print.h"
 __attribute__((noreturn)) void panic(const char*);
 
 void __init_stdlib()
@@ -35,23 +35,18 @@ void __assert_fail(const char *assertion,
                     unsigned int line,
                     const char *function)
 {
-  __serial_print1("Assertion failed: ");
-      __serial_print1(assertion);
-  __serial_print1("  in file ");
-      __serial_print1(file);
-  __serial_print1(", function ");
-      __serial_print1(function);
-  __serial_print1("\n");
-  panic(assertion);
+  char buffer[4096];
+  snprintf(buffer, sizeof(buffer),
+          "Assertion failed: %s in %s:%u, function %s\n",
+          assertion, file, line, function);
+  panic(buffer);
 }
 
 void panic(const char* why)
 {
-  __serial_print1("\n\n!!! PANIC !!!\n");
-  __serial_print1(why);
+  kprintf("\n\n!!! PANIC !!!\n%s\n", why);
 
   // the end
-  __serial_print1("\n");
-  while(1) asm("cli; hlt");
+  while(1) __asm__ ("cli; hlt");
   __builtin_unreachable();
 }
