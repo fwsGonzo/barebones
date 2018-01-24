@@ -13,7 +13,7 @@ ASM_FILES=src/kernel/start.asm
 OPTIONS=-m32 -msse3 -Isrc
 WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
-LDFLAGS=-static -nostdlib -melf_i386 -n --strip-all --script=linker.ld
+LDFLAGS=-static -nostdlib -melf_i386 -n --strip-all --script=src/linker.ld
 CFLAGS=-std=gnu11 $(COMMON)
 CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)
 
