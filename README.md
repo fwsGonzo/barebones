@@ -3,7 +3,7 @@
 - Intended for beginner OS development
 - Install qemu for qemu-system-x86_64, gcc-multilib for a 32-bit compiler and nasm for the assembly
 - Build and boot kernel in qemu with ./run.sh
-- Run with VGA textmode using ./vga_run.sh
+- VGA textmode using ./vga_run.sh (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)
 - Use ./build_iso.sh to run on real hardware or a hypervisor like VirtualBox, but keep serial port logging in mind!
 
 ## Features
@@ -11,7 +11,7 @@
 - 600kb stack and working GDT
 - Multiboot parameters passed to kernel start
 - assert(), kprintf() and snprintf()
-- Basic heap implementation (malloc/free, new/delete)
+- Very basic heap implementation (malloc/free, new/delete)
 - C and C++ global constructors
 - Stack protector support
 
@@ -22,12 +22,13 @@ The goal is to provide a barebones kernel project that implements the most basic
 ## Future work
 
 - Build a proper cross-compiler locally and use it to build this project with
--     Without a proper cross-compiler you can experience all sorts of strange issues when you start adding large C/C++ standard library support
+    - Without a proper cross-compiler you can experience all sorts of strange issues when you start adding large C/C++ standard library support
 - Create simple page tables and directly enter long mode (64-bit)
+    - If you create an issue about this I will drop in 64-bit long mode support. 32-bit is not what all the modern desktops out there are using right now!
 
 ## Validate output
 
-Output should match
+./run.sh output should match:
 ```
 ------------------
 Hello OSdev world!
