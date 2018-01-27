@@ -15,6 +15,7 @@
 - C and C++ global constructors
 - Stack protector support
 - EASTL C++ support, which has many useful containers
+- Entire machine image is 32kb (8k without EASTL)
 
 ## Goal
 
@@ -26,6 +27,7 @@ The goal is to provide a barebones kernel project that implements the most basic
     - Without a proper cross-compiler you can experience all sorts of strange issues when you start adding large C/C++ standard library support
 - Create simple page tables and directly enter long mode (64-bit)
     - If you create an issue about this I will drop in 64-bit long mode support. 32-bit is not what all the modern desktops out there are using right now!
+- Add support for 64-bit sizes in the printf library
 
 ## Validate output
 
