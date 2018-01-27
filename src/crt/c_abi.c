@@ -30,6 +30,7 @@ void __stack_chk_fail_local()
   panic("Stack protector: Canary modified");
   __builtin_unreachable();
 }
+__attribute__((used))
 void __stack_chk_fail()
 {
   panic("Stack protector: Canary modified");
@@ -65,6 +66,7 @@ void panic(const char* why)
   __builtin_unreachable();
 }
 
+__attribute__((used))
 void* memset(char* dest, int ch, size_t size)
 {
   for (size_t i = 0; i < size; i++)

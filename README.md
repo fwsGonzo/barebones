@@ -16,6 +16,8 @@
 - Stack protector support
 - EASTL C++ support, which has many useful containers
 - Entire machine image is 32kb (8k without EASTL)
+- ThinLTO support if you build your own clang toolchain from trunk
+    - Machine image goes from 32kb to 11kb with LTO
 
 ## Goal
 

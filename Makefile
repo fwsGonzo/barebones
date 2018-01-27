@@ -16,9 +16,16 @@ CPP_FILES += ext/EASTL/source/allocator_eastl.cpp ext/EASTL/source/assert.cpp \
 							ext/EASTL/source/intrusive_list.cpp ext/EASTL/source/numeric_limits.cpp \
 							ext/EASTL/source/red_black_tree.cpp ext/EASTL/source/string.cpp
 
-GDEFS = -DEASTL_SIZE_T_32BIT=1
+GDEFS =
+OPTIMIZE = -O2
 
-OPTIONS=-m32 -msse3 $(INCLUDE) $(GDEFS)
+## to enable ThinLTO use these ##
+#CC=.../clang-trunk/bin/clang-5.0
+#CXX=.../clang-trunk/bin/clang++-5.0
+#LD=ld.lld-5.0
+#LTO_DEFS=-flto=thin
+
+OPTIONS=-m32 -msse3 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
 WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 --strip-all --script=src/linker.ld
