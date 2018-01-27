@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <cstring>
 #include <kprint.hpp>
+extern "C" void* malloc(size_t);
+extern "C" void free(void*);
 
 //#define DEBUG_HEAP
 #ifdef DEBUG_HEAP
@@ -31,6 +33,15 @@ void operator delete(void* ptr)
 void operator delete[](void* ptr)
 {
   HPRINT("operator delete[]: %p\n", ptr);
+  free(ptr);
+}
+// C++14 sized deallocation
+void operator delete(void* ptr, std::size_t)
+{
+  free(ptr);
+}
+void operator delete [](void* ptr, std::size_t)
+{
   free(ptr);
 }
 

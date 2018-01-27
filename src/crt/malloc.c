@@ -5,7 +5,7 @@
 #include <errno.h>
 
 static inline size_t word_align(size_t size) {
-    return size + (sizeof(size_t) - 1) & ~(sizeof(size_t) - 1);
+    return size + ((sizeof(size_t) - 1) & ~(sizeof(size_t) - 1));
 }
 
 struct chunk {
