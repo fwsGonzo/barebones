@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdint.h>
 #include <kprint.h>
 __attribute__((noreturn)) void panic(const char*);
@@ -8,8 +9,8 @@ void __init_stdlib()
   extern char _BSS_START_;
   extern char _BSS_END_;
 
-  for (char* bss = &_BSS_START_; bss < &_BSS_END_; bss++) {
-    *bss = 0;
+  for (char* bss = &_BSS_START_; bss < &_BSS_END_;) {
+    *bss++ = 0;
   }
 
   // 2. initialize heap (malloc, etc.)
@@ -62,4 +63,38 @@ void panic(const char* why)
   // the end
   while(1) __asm__ ("cli; hlt");
   __builtin_unreachable();
+}
+
+void* memset(char* dest, int ch, size_t size)
+{
+  for (size_t i = 0; i < size; i++)
+    dest[i] = ch;
+  return dest;
+}
+void* memcpy(char* dest, const char* src, size_t size)
+{
+  for (size_t i = 0; i < size; i++)
+    dest[i] = src[i];
+  return dest;
+}
+void* memmove(char* dest, const char* src, size_t size)
+{
+  if (dest <= src)
+  {
+    for (size_t i = 0; i < size; i++)
+      dest[i] = src[i];
+  }
+  else
+  {
+    for (int i = size-1; i >= 0; i--)
+      dest[i] = src[i];
+  }
+  return dest;
+}
+
+// naive version (needed for EASTL)
+float ceilf(float n)
+{
+  long int i = (int) n;
+  return (n == (float) i) ? n : i + 1;
 }

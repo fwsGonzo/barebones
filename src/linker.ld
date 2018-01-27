@@ -33,20 +33,20 @@ SECTIONS
     _RODATA_END_ = .;
   }
 
-  .data :
-  {
-    _DATA_START_ = .;
-    *(.data*)
-    *(.gnu.linkonce.d*)
-    _DATA_END_ = .;
-  }
-
   .init_array :
   {
     PROVIDE_HIDDEN (__init_array_start = .);
     KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
     KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
     PROVIDE_HIDDEN (__init_array_end = .);
+  }
+
+  .data :
+  {
+    _DATA_START_ = .;
+    *(.data*)
+    *(.gnu.linkonce.d*)
+    _DATA_END_ = .;
   }
 
   PROVIDE(_LOAD_END_ = .);

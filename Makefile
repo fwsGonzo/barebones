@@ -9,11 +9,19 @@ C_FILES = src/kernel/kernel_start.c \
 CPP_FILES=src/test.cpp src/crt/cxxabi.cpp
 # .asm files for NASM
 ASM_FILES=src/kernel/start.asm
+# EASTL C++ library
+INCLUDE=-Isrc -Iext/EASTL/include -Iext/EASTL/test/packages/EABase/include/Common
+CPP_FILES += ext/EASTL/source/allocator_eastl.cpp ext/EASTL/source/assert.cpp \
+							ext/EASTL/source/fixed_pool.cpp ext/EASTL/source/hashtable.cpp \
+							ext/EASTL/source/intrusive_list.cpp ext/EASTL/source/numeric_limits.cpp \
+							ext/EASTL/source/red_black_tree.cpp ext/EASTL/source/string.cpp
 
-OPTIONS=-m32 -msse3 -Isrc
+GDEFS = -DEASTL_SIZE_T_32BIT=1
+
+OPTIONS=-m32 -msse3 $(INCLUDE) $(GDEFS)
 WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
-LDFLAGS=-static -nostdlib -melf_i386 -n --strip-all --script=src/linker.ld
+LDFLAGS=-static -nostdlib -melf_i386 --strip-all --script=src/linker.ld
 CFLAGS=-std=gnu11 $(COMMON)
 CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)
 
