@@ -1,6 +1,7 @@
-#include <EASTL/vector.h>
 #include <cassert>
 #include <kprint.hpp>
+#include <EASTL/map.h>
+#include <EASTL/vector.h>
 
 struct Test
 {
@@ -20,14 +21,21 @@ struct Test
 
 static void test_eastl()
 {
-  kprintf("Checking EASTL support\n");
+  kprintf("* Checking EASTL support\n");
   Test test(1);
   assert(test.back() == 1);
   test.add(2);
   assert(test.back() == 2);
   test.add(4);
   assert(test.back() == 4);
-  kprintf("EASTL vector works!\n");
+  kprintf("-> EASTL vector works!\n");
+
+  eastl::map<int, int> map;
+  map.insert({1, 2});
+  map.insert({2, 4});
+  assert(map.find(1) != map.end());
+  assert(map.find(2) != map.end());
+  kprintf("-> EASTL map works!\n");
 }
 
 extern "C"

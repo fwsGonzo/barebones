@@ -14,6 +14,7 @@
 - Very basic heap implementation (malloc/free, new/delete)
 - C and C++ global constructors
 - Stack protector support
+- EASTL C++ support, which has many useful containers
 
 ## Goal
 
@@ -34,6 +35,9 @@ The goal is to provide a barebones kernel project that implements the most basic
 Hello OSdev world!
 Multiboot EAX: 0x2badb002
 Multiboot EBX: 0x9500
+* Checking EASTL support
+-> EASTL vector works!
+-> EASTL map works!
 Hello from freestanding C++!
 Press Ctrl+A -> X to close
 Returned from kernel_start! Halting...
