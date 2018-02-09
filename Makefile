@@ -17,15 +17,14 @@ CPP_FILES += ext/EASTL/source/allocator_eastl.cpp ext/EASTL/source/assert.cpp \
 							ext/EASTL/source/red_black_tree.cpp ext/EASTL/source/string.cpp
 
 GDEFS =
-OPTIMIZE = -O2
+LIBS  =
+OPTIMIZE = -O2 -mfpmath=sse -mmmx -msse -msse2 -msse3
 
 ## to enable ThinLTO use these ##
-#CC=.../clang-trunk/bin/clang-5.0
-#CXX=.../clang-trunk/bin/clang++-5.0
-#LD=ld.lld-5.0
-#LTO_DEFS=-flto=thin
+#LD=ld.lld             # path to your LLD binary
+#LTO_DEFS=-flto=full   # full or thin
 
-OPTIONS=-m32 -msse3 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
+OPTIONS=-m32 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
 WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
 LDFLAGS=-static -nostdlib -melf_i386 --strip-all --script=src/linker.ld
@@ -49,7 +48,7 @@ DEPS=$(CXXOBJ:.o=.d) $(COBJ:.o=.d)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: $(COBJ) $(CXXOBJ) $(ASMOBJ)
-	$(LD) $(LDFLAGS) $(COBJ) $(CXXOBJ) $(ASMOBJ) -o $(OUT)
+	$(LD) $(LDFLAGS) $(COBJ) $(CXXOBJ) $(ASMOBJ) $(LIBS) -o $(OUT)
 
 clean:
 	$(RM) $(OUT) $(COBJ) $(CXXOBJ) $(ASMOBJ) $(DEPS)
