@@ -1,5 +1,6 @@
 *.o
 *.d
+chainloader
 mykernel
 temp_disk
 grub.iso

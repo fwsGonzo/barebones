@@ -14,8 +14,16 @@ static inline void outb(int port, uint8_t data)
   __asm__ ("outb %%al,%%dx"::"a" (data), "d"(port));
 }
 
+static char initialized;
 void __init_serial1()
 {
+  initialized = 0;
+}
+
+static inline void init_serial_if_needed()
+{
+  if (initialized) return;
+  initialized = 1;
   // properly initialize serial port
   outb(port + 1, 0x00);    // Disable all interrupts
   outb(port + 3, 0x80);    // Enable DLAB (set baud rate divisor)
@@ -27,6 +35,7 @@ void __init_serial1()
 
 void __serial_print1(const char* cstr)
 {
+  init_serial_if_needed();
   while (*cstr) {
     while (!(inb(port + 5) & 0x20));
     outb(port, *cstr++);
@@ -34,6 +43,7 @@ void __serial_print1(const char* cstr)
 }
 void __serial_print(const char* str, int len)
 {
+  init_serial_if_needed();
   for (int i = 0; i < len; i++) {
     while (!(inb(port + 5) & 0x20));
     outb(port, str[i]);

@@ -100,3 +100,10 @@ float ceilf(float n)
   long int i = (int) n;
   return (n == (float) i) ? n : i + 1;
 }
+
+char* strcpy(char* dst, const char* src)
+{
+  while (*dst++ = *src++);
+  *dst = 0;
+  return dst;
+}
