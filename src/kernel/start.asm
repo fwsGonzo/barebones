@@ -59,7 +59,6 @@ rock_bottom:
 
     call enable_cpu_feat
     call __init_serial1
-    call __init_stdlib
 
     ;; Enable stack protector:
     ;; GS is located at 0x1000
