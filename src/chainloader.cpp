@@ -5,7 +5,7 @@
 #include <multiboot.h>
 #include <elf.h>
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define PRINT(X,...)  kprintf(X,##__VA_ARGS__);
 #else

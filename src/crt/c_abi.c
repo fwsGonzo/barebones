@@ -39,7 +39,6 @@ void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
 
   // 2. find end of multiboot areas
   void* free_begin = multiboot_free_begin(mb_addr);
-  kprintf("Multiboot end: %p\n", free_begin);
 
   // 3. initialize heap (malloc, etc.)
   extern void __init_heap(void*);
