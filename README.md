@@ -37,7 +37,8 @@ The goal is to provide a barebones kernel project that implements the most basic
 ------------------
 * Multiboot EAX: 0x2badb002
 * Multiboot EBX: 0x9500
-* SSE works!
+* SSE instructions ... work!
+* Global constructors ... work!
 
 Hello OSdev world!
 This is kernel_main(uint32_t, uint32_t).
