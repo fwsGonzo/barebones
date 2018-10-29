@@ -20,7 +20,7 @@ INCLUDE=-Isrc
 
 GDEFS =
 LIBS  =
-OPTIMIZE = -Ofast -mfpmath=sse -march=native
+OPTIMIZE = -Ofast -mfpmath=sse -msse3 #-march=native
 
 ## to enable LLVM / ThinLTO use these ##
 #LD=ld.lld-6.0         # path to your LLD binary

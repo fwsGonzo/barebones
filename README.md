@@ -3,7 +3,8 @@
 - Intended for beginner OS development
 - Install qemu for qemu-system-x86_64, gcc-multilib for a 32-bit compiler and nasm for the assembly
 - Build and boot kernel in qemu with ./run.sh
-- VGA textmode using ./vga_run.sh (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)
+- If building with -march=native (or anything that requires AVX), remember to run with KVM enabled (./run.sh --kvm) so that QEMU will present the modern instruction set features to the guest operating system.
+- VGA textmode using ./run.sh --vga (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)
 - Use ./build_iso.sh to run on real hardware or a hypervisor like VirtualBox, but keep serial port logging in mind!
 
 ## Features
@@ -16,8 +17,8 @@
 - Stack protector support
 - EASTL C++ support, which has many useful containers
 - Entire machine image is 32kb (8k without EASTL)
-- ThinLTO support if you build your own clang toolchain from trunk
-    - Machine image goes from 32kb to 11kb with LTO
+- ThinLTO support if you are using clang
+    - Machine image goes from 32kb to 12kb with LTO
 
 ## Goal
 
@@ -25,8 +26,6 @@ The goal is to provide a barebones kernel project that implements the most basic
 
 ## Future work
 
-- Build a proper cross-compiler locally and use it to build this project with
-    - Without a proper cross-compiler you can experience all sorts of strange issues when you start adding large C/C++ standard library support
 - Create simple page tables and directly enter long mode (64-bit)
     - If you create an issue about this I will drop in 64-bit long mode support. 32-bit is not what all the modern desktops out there are using right now!
 - Add support for 64-bit sizes in the printf library
@@ -36,13 +35,13 @@ The goal is to provide a barebones kernel project that implements the most basic
 ./run.sh output should match:
 ```
 ------------------
+* Multiboot EAX: 0x2badb002
+* Multiboot EBX: 0x9500
+* SSE works!
+
 Hello OSdev world!
-Multiboot EAX: 0x2badb002
-Multiboot EBX: 0x9500
-* Checking EASTL support
--> EASTL vector works!
--> EASTL map works!
-Hello from freestanding C++!
+This is kernel_main(uint32_t, uint32_t).
+
 Press Ctrl+A -> X to close
 Returned from kernel_start! Halting...
 ```
