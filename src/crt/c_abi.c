@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <kprint.h>
@@ -28,7 +29,7 @@ void* multiboot_free_begin(uint32_t mb_addr)
 
 void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
 {
-  (void) mb_magic;
+  assert(mb_magic == 0x2badb002);
   // 1. initialize BSS area
   extern char _BSS_START_;
   extern char _BSS_END_;
@@ -48,8 +49,9 @@ void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
   extern void(*__init_array_start [])();
   extern void(*__init_array_end [])();
   int count = __init_array_end - __init_array_start;
-  for (int i = 0; i < count; i++)
+  for (int i = 0; i < count; i++) {
       __init_array_start[i]();
+  }
 }
 
 void __stack_chk_fail_local()

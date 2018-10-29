@@ -1,8 +1,6 @@
-extern __init_serial1
 extern __serial_print1
 extern __init_stdlib
 extern kernel_start
-extern panic
 
 ;; stack base address at EBDA border
 ;; NOTE: Multiboot can use 9d400 to 9ffff
@@ -16,6 +14,14 @@ extern _MULTIBOOT_START_
 extern _LOAD_START_
 extern _LOAD_END_
 extern _end
+
+%macro ASM_PRINT 1
+  pusha
+  push %1
+  call __serial_print1
+  add esp, 4
+  popa
+%endmacro
 
 ALIGN 4
 section .multiboot
@@ -57,8 +63,8 @@ rock_bottom:
     push ebx
     push eax
 
+    ;;ASM_PRINT(strings.phase1)
     call enable_cpu_feat
-    call __init_serial1
 
     ;; Enable stack protector:
     ;; GS is located at 0x1000
@@ -66,6 +72,7 @@ rock_bottom:
     ;; Copy RDTSC.EAX to this location as preliminary value
     rdtsc
     mov DWORD [0x1014], eax
+    ;;ASM_PRINT(strings.phase2)
 
     ;; eax, ebx still on stack
     call kernel_start
@@ -87,12 +94,34 @@ enable_cpu_feat:
     or ax, 3 << 9   ;set CR4.OSFXSR and CR4.OSXMMEXCPT at the same time
     or ax, 0x20     ;enable native FPU exception handling
     mov cr4, eax
+    ;; read out CPU features
+    mov eax, 1
+    xor ecx, ecx
+    cpuid
+    mov edx, ecx
+    ;; check for XSAVE support (bit 26)
+    and ecx, 0x04000000
+    jz xsave_not_supported
+    ;; enable XSAVE
+    mov eax, cr4
+    or  eax, 0x40000
+    mov cr4, eax
+    ;; check for AVX support (bit 28)
+    and edx, 0x10000000
+    jz xsave_not_supported
+    ;; enable AVX
+    xor ecx, ecx
+    xgetbv
+    or eax, 0x7
+    xsetbv
+xsave_not_supported:
     ret
 
 section .data
 strings:
-  .panic:
-    db `Returned from kernel_start! Halting...\n`,0x0
+  .panic: db `Returned from kernel_start! Halting...\n`,0x0
+  .phase1: db `start.asm PHASE 1\n`,0x0
+  .phase2: db `start.asm PHASE 2\n`,0x0
 
 ALIGN 32
 gdtr:

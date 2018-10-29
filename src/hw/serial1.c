@@ -1,6 +1,7 @@
 #include <stdint.h>
 
-static const uint16_t port = 0x3F8; // Serial 1
+static const uint16_t port = 0x3F8; // Serial port 1
+static char initialized __attribute__((section(".data"))) = 0;
 
 static inline uint8_t inb(int port)
 {
@@ -12,12 +13,6 @@ static inline uint8_t inb(int port)
 static inline void outb(int port, uint8_t data)
 {
   __asm__ ("outb %%al,%%dx"::"a" (data), "d"(port));
-}
-
-static char initialized;
-void __init_serial1()
-{
-  initialized = 0;
 }
 
 static inline void init_serial_if_needed()

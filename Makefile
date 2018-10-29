@@ -1,13 +1,12 @@
 # kernel binary
-OUT = chainloader
+OUT = mykernel
 # .c files (add your own!)
 C_FILES = src/kernel/kernel_start.c \
 					src/hw/serial1.c \
 					src/crt/c_abi.c src/crt/heap.c src/crt/malloc.c \
-				  src/prnt/print.c src/prnt/mini-printf.c \
-					src/hotswap.c
+				  src/prnt/print.c src/prnt/mini-printf.c
 # .cpp files
-CPP_FILES=src/chainloader.cpp src/crt/cxxabi.cpp
+CPP_FILES=src/main.cpp src/crt/cxxabi.cpp
 # .asm files for NASM
 ASM_FILES=src/kernel/start.asm
 # includes
@@ -21,11 +20,11 @@ INCLUDE=-Isrc
 
 GDEFS =
 LIBS  =
-OPTIMIZE = -Oz -mfpmath=sse -mmmx -msse -msse2 -msse3
+OPTIMIZE = -Ofast -mfpmath=sse -march=native
 
-## to enable ThinLTO use these ##
-LD=ld.lld             # path to your LLD binary
-LTO_DEFS=-flto=thin   # full or thin
+## to enable LLVM / ThinLTO use these ##
+#LD=ld.lld-6.0         # path to your LLD binary
+#LTO_DEFS=-flto=full   # full or thin
 
 OPTIONS=-m32 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
 WARNS=-Wall -Wextra -pedantic
@@ -52,6 +51,9 @@ DEPS=$(CXXOBJ:.o=.d) $(COBJ:.o=.d)
 
 all: $(COBJ) $(CXXOBJ) $(ASMOBJ)
 	$(LD) $(LDFLAGS) $(COBJ) $(CXXOBJ) $(ASMOBJ) $(LIBS) -o $(OUT)
+
+chainloader: $(COBJ) $(CXXOBJ) $(ASMOBJ)
+	$(LD) $(LDFLAGS) $(COBJ) $(CXXOBJ) $(ASMOBJ) $(LIBS) -o chainloader
 
 executable:
 	$(info $(OUT))
