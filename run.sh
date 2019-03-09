@@ -22,4 +22,4 @@ done
 
 # NOTE: if building with -march=native, make sure to enable KVM,
 # as emulated qemu only supports up to SSE3 instructions
-sudo qemu-system-x86_64 $KVM -kernel `make executable` $GRAPHICS
+sudo qemu-system-x86_64 $KVM -kernel tools/chainloader -initrd `make executable` $GRAPHICS

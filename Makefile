@@ -8,7 +8,7 @@ C_FILES = src/kernel/kernel_start.c \
 # .cpp files
 CPP_FILES=src/main.cpp src/crt/cxxabi.cpp
 # .asm files for NASM
-ASM_FILES=src/kernel/start.asm
+ASM_FILES=src/kernel/start.asm src/kernel/start64.asm
 # includes
 INCLUDE=-Isrc
 # EASTL C++ library
@@ -23,13 +23,13 @@ LIBS  =
 OPTIMIZE = -Ofast -mfpmath=sse -msse3 #-march=native
 
 ## to enable LLVM / ThinLTO use these ##
-#LD=ld.lld-6.0         # path to your LLD binary
+#LD=ld.lld             # path to your LLD binary
 #LTO_DEFS=-flto=full   # full or thin
 
-OPTIONS=-m32 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
+OPTIONS=-m64 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
 WARNS=-Wall -Wextra -pedantic
 COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
-LDFLAGS=-static -nostdlib -melf_i386 --strip-all --script=src/linker.ld
+LDFLAGS=-static -nostdlib -N -melf_x86_64 --strip-all --script=src/linker.ld
 CFLAGS=-std=gnu11 $(COMMON)
 CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)
 
@@ -41,7 +41,7 @@ DEPS=$(CXXOBJ:.o=.d) $(COBJ:.o=.d)
 .PHONY: clean all executable
 
 %.o: %.asm
-	nasm -f elf -o $@ $<
+	nasm -f elf64 -o $@ $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

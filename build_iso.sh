@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 make -j
-KERNEL=mykernel
+KERNEL=`make executable`
 LOCAL_DISK=temp_disk
 
 # create grub.iso

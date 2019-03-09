@@ -7,24 +7,24 @@ __attribute__((noreturn)) void panic(const char*);
 size_t strlen(const char* str);
 extern char _end;
 
-void* multiboot_free_begin(uint32_t mb_addr)
+static void* multiboot_free_begin(intptr_t mb_addr)
 {
   const multiboot_info_t* info = (multiboot_info_t*) mb_addr;
   uint32_t end = (uintptr_t) &_end;
 
   if (info->flags & MULTIBOOT_INFO_CMDLINE) {
-    const char* cmdline = (char*) info->cmdline;
+    const char* cmdline = (char*) (intptr_t) info->cmdline;
     end = info->cmdline + strlen(cmdline);
   }
 
-  const multiboot_module_t* mod = (multiboot_module_t*) info->mods_addr;
+  const multiboot_module_t* mod = (multiboot_module_t*) (intptr_t) info->mods_addr;
   const multiboot_module_t* mods_end = mod + info->mods_count;
 
   for (; mod < mods_end; mod++)
   {
     if (mod->mod_end > end) end = mod->mod_end;
   }
-  return (void*) end;
+  return (void*) (intptr_t) end;
 }
 
 void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
