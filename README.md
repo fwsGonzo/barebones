@@ -27,6 +27,7 @@ The goal is to provide a barebones kernel project that implements the most basic
 ## Future work
 
 - Add support for 64-bit sizes in the printf library
+- Add support for the undefined sanitizer API
 
 ## Validate output
 
