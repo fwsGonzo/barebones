@@ -17,10 +17,8 @@ static void print_trace(const int N, const void* ra)
 }
 
 extern "C"
-void panic(const char* reason)
+void print_backtrace()
 {
-  kprintf("\n\n!!! PANIC !!!\n%s\n", reason);
-
   kprintf("\nBacktrace:\n");
   void* ra;
   if (frp(0, ra)) {
@@ -32,6 +30,15 @@ void panic(const char* reason)
       }
     }
   }
+}
+
+extern "C"
+__attribute__((noreturn))
+void panic(const char* reason)
+{
+  kprintf("\n\n!!! PANIC !!!\n%s\n", reason);
+
+  print_backtrace();
 
   // the end
   kprintf("\nKernel halting...\n");

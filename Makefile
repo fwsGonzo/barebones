@@ -4,6 +4,7 @@ OUT = mykernel
 C_FILES = src/kernel/kernel_start.c \
 					src/hw/serial1.c \
 					src/crt/c_abi.c src/crt/heap.c src/crt/malloc.c \
+					src/crt/ubsan.c \
 				  src/prnt/print.c src/prnt/mini-printf.c
 # .cpp files
 CPP_FILES=src/main.cpp src/crt/cxxabi.cpp \
@@ -19,7 +20,7 @@ INCLUDE=-Isrc
 #							ext/EASTL/source/intrusive_list.cpp ext/EASTL/source/numeric_limits.cpp \
 #							ext/EASTL/source/red_black_tree.cpp ext/EASTL/source/string.cpp
 
-GDEFS =
+GDEFS = #-fsanitize=undefined
 LIBS  =
 OPTIMIZE = -Ofast -mfpmath=sse -msse3 #-march=native
 
