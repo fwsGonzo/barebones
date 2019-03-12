@@ -59,6 +59,34 @@ Returned from kernel_start! Halting...
 - Do I really need a cross-compiler to work on this project?
     - No, that is a misconception that the OSdev community holds dear to its heart, but its not necessary. The Linux-native compilers will use FS/GS for TLS, and will require you to fake the table that (among other things) contain the stack sentinel value. Otherwise, you can reasonably expect normal library calls to be optimized (printf -> write).
 
+## Undefined sanitizer
+
+- Easy to support, but has some caveats
+    - It's miles better if you can resolve symbol addresses to names
+    - Does not work on clang because of some C++ typeid stuff, even when we use -fsanitize=no-vptr, which suggests there is an issue with the compiler
+    - Works on GCC for me
+- Has not been extensively verified
+
+## Link-Time Optimization
+
+- Works on clang out of the box, just make sure you use the correct LLD that comes with your compiler
+    - Both ThinLTO and full LTO works!
+- Does not work on GCC at all due to how complicated it is to call the LTO-helpers manually
+
+## Thread-Local Storage
+
+- The basic foundation has been laid down
+- Linker script needs to be amended to store .tbss and .tdata sections
+- Functionality for creating new thread storage needs to be created
+
+## Symmetric Multi-Processing
+
+- Enumerate other APICs from ACPI table
+- Activate the main LAPIC, then from that activate the other LAPICS
+- Create PER-CPU tables and assign each cpu to separate GS segments
+- While you don't strictly need interrupts just to start the CPUs, you really want it so that you can send signals to activate work
+- Virtual CPUs are just a thread on the Qemu hypervisor
+
 ## Qemu defaults
 
 Qemu provides you with some default devices to start with
