@@ -139,6 +139,22 @@ long_mode:
     mov eax, 0x0
     wrmsr
 
+    ;; Enable stack protector:
+    ;; On amd64 FS should point to tls-table for cpu0
+    ;; Linux uses FS:0x28 to access stack protector value
+    extern tls
+    mov ecx, IA32_FS_BASE
+    mov edx, 0x0
+    mov eax, tls
+    wrmsr
+    ;; Set "random" stack protector value
+    extern __SSP__
+    rdtsc
+    mov rcx, __SSP__
+    xor rax, rcx
+    ;; Install in TLS table
+    mov QWORD [tls+0x28], rax
+
     ;; geronimo!
     mov  edi, DWORD[mb_magic]
     mov  esi, DWORD[mb_addr]

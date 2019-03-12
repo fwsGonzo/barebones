@@ -86,15 +86,6 @@ void _exit(int status)
   __builtin_unreachable();
 }
 
-void panic(const char* why)
-{
-  kprintf("\n\n!!! PANIC !!!\n%s\n", why);
-
-  // the end
-  while(1) __asm__ ("cli; hlt");
-  __builtin_unreachable();
-}
-
 __attribute__((used))
 void* memset(char* dest, int ch, size_t size)
 {

@@ -6,7 +6,8 @@ C_FILES = src/kernel/kernel_start.c \
 					src/crt/c_abi.c src/crt/heap.c src/crt/malloc.c \
 				  src/prnt/print.c src/prnt/mini-printf.c
 # .cpp files
-CPP_FILES=src/main.cpp src/crt/cxxabi.cpp
+CPP_FILES=src/main.cpp src/crt/cxxabi.cpp \
+					src/kernel/tls.cpp src/kernel/panic.cpp
 # .asm files for NASM
 ASM_FILES=src/kernel/start.asm src/kernel/start64.asm
 # includes
@@ -28,8 +29,10 @@ OPTIMIZE = -Ofast -mfpmath=sse -msse3 #-march=native
 
 OPTIONS=-m64 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
 WARNS=-Wall -Wextra -pedantic
-COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong $(OPTIONS) $(WARNS)
-LDFLAGS=-static -nostdlib -N -melf_x86_64 --strip-all --script=src/linker.ld
+COMMON=-ffreestanding -nostdlib -MMD -fstack-protector-strong -fno-omit-frame-pointer $(OPTIONS) $(WARNS)
+# inject some random numbers into a symbol so we can get some free random bits
+SSP=$(shell hexdump -n 8 -e '4/4 "%08X" 1 "\n"' /dev/random)
+LDFLAGS=-static -nostdlib -N -melf_x86_64 --strip-all --script=src/linker.ld --defsym __SSP__=0x$(SSP)
 CFLAGS=-std=gnu11 $(COMMON)
 CXXFLAGS=-std=c++14 -fno-exceptions -fno-rtti $(COMMON)
 
