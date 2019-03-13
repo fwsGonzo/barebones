@@ -19,6 +19,7 @@
 - Entire machine image is 19kb (11k without EASTL)
 - ThinLTO support if you are using clang
     - Machine image goes from 19kb to 13kb with LTO
+- Unmapped zero page for the very common null-pointer access bugs
 
 ## Goal
 
