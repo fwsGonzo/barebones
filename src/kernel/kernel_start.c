@@ -27,7 +27,8 @@ void kernel_start(uint32_t eax, uint32_t ebx)
   __init_stdlib(eax, ebx);
 
   // we have to do this after initializing .bss
-  __init_paging();
+  // NOTE: don't enable this until you catch CPU exceptions!
+  //__init_paging();
 
   extern void kernel_main(uint32_t, uint32_t);
   kernel_main(eax, ebx);

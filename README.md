@@ -20,6 +20,7 @@
 - ThinLTO support if you are using clang
     - Machine image goes from 19kb to 13kb with LTO
 - Unmapped zero page for the very common null-pointer access bugs
+    - You have to enable this yourself, after CPU exception handling
 
 ## Goal
 
