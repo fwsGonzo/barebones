@@ -61,10 +61,9 @@ Returned from kernel_start! Halting...
 
 ## Undefined sanitizer
 
+- Works on GCC and Clang
 - Easy to support, but has some caveats
     - It's miles better if you can resolve symbol addresses to names
-    - Does not work on clang because of some C++ typeid stuff, even when we use -fsanitize=no-vptr, which suggests there is an issue with the compiler
-    - Works on GCC for me
 - Has not been extensively verified
 
 ## Link-Time Optimization

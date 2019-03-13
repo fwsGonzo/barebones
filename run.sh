@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-make -j4
 GRAPHICS=-nographic
 
 for i in "$@"
@@ -14,11 +13,17 @@ case $i in
     GRAPHICS="-vga std"
     shift # past argument with no value
     ;;
+    --sanitize)
+    OPTION="sanitize"
+    shift # past argument with no value
+    ;;
     *)
           # unknown option
     ;;
 esac
 done
+
+make -j4 $OPTION
 
 # NOTE: if building with -march=native, make sure to enable KVM,
 # as emulated qemu only supports up to SSE3 instructions

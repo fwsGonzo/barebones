@@ -125,15 +125,14 @@ void __ubsan_handle_type_mismatch_v1(struct mismatch* data, unsigned long ptr)
     reason = "Null-pointer access";
   }
   char buffer[2048];
+  // TODO: resolve symbol name
   snprintf(buffer, sizeof(buffer),
-          "%s on ptr %p  (aligned %lu)\n"
-          "ubsan: type name %s\n"
-          "ubsan: symbol    %p",
+          "%s on ptr 0x%x  (aligned %u)\n"
+          "ubsan: type name %s\n",
           reason,
-          (void*) ptr,
-          alignment,
-          data->type->type_name,
-          (void*) ptr); // TODO: resolve symbol name
+          (uint32_t) (uintptr_t) ptr,
+          (uint32_t) alignment,
+          data->type->type_name);
   undefined_throw(buffer);
 }
 void __ubsan_handle_function_type_mismatch(
