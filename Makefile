@@ -22,11 +22,11 @@ CPP_FILES += ext/EASTL/source/allocator_eastl.cpp ext/EASTL/source/assert.cpp \
 
 GDEFS =
 LIBS  =
-OPTIMIZE = -Ofast -mfpmath=sse -msse3 -march=native
+OPTIMIZE = -Ofast -mfpmath=sse -msse3 #-march=native
 
 ## to enable LLVM / ThinLTO use these ##
-LD=ld.lld             # path to your LLD binary
-LTO_DEFS=-flto=full   # full or thin
+#LD=ld.lld             # path to your LLD binary
+#LTO_DEFS=-flto=full   # full or thin
 
 OPTIONS=-m64 $(INCLUDE) $(GDEFS) $(OPTIMIZE) $(LTO_DEFS)
 WARNS=-Wall -Wextra -pedantic
