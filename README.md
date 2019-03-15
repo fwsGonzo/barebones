@@ -22,6 +22,13 @@
 - Unmapped zero page for the very common null-pointer access bugs
     - You have to enable this yourself, after CPU exception handling
 
+## Running
+
+Use ./run.ssh to build and run your kernel.
+- Use argument --kvm if you want to use hardware-accelerated virtualization, or you have built with -march=native in which you must use that. Enable virtualization in your BIOS settings if you haven't.
+- Use argument --vga to get a graphical window, which starts out in VGA textmode accessible at 0xb8000.
+- Use argument --sanitize to enable the undefined-sanitizer, catching problems like misaligned accesses and overflows.
+
 ## Goal
 
 The goal is to provide a barebones kernel project that implements the most basic C/C++ voodoo to let people start reading/writing to registers and devices immediately. The goal is also to provide people with a choice of using C or C++, or a mix of both.
@@ -29,7 +36,7 @@ The goal is to provide a barebones kernel project that implements the most basic
 ## Future work
 
 - Add support for 64-bit sizes in the printf library
-- Add support for the undefined sanitizer API
+- Add TLS api and support for most thread local variables
 
 ## Validate output
 
