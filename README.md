@@ -16,10 +16,10 @@
 - C and C++ global constructors
 - Stack protector support
 - EASTL C++ support, which has many useful containers
-- Entire machine image is 19kb (11k without EASTL)
-- ThinLTO support if you are using clang
-    - Machine image goes from 19kb to 13kb with LTO
-- Unmapped zero page for the very common null-pointer access bugs
+- Entire machine image is 19kb (13k without EASTL)
+- LTO and ThinLTO support if you are using clang
+- Undefined-sanitizer support to catch some problems during runtime
+- Option to unmap zero page (for the very common null-pointer access bugs)
     - You have to enable this yourself, after CPU exception handling
 
 ## Running
@@ -37,6 +37,7 @@ The goal is to provide a barebones kernel project that implements the most basic
 
 - Add support for 64-bit sizes in the printf library
 - Add TLS api and support for most thread local variables
+- Add support for LTO with GCC (no ideas on how to do this yet)
 
 ## Validate output
 
@@ -64,7 +65,7 @@ Returned from kernel_start! Halting...
 - I can't use normal C/C++ library functions
     - Make sure you are using something that exists in EASTL, or you will have to implement it yourself
 - I can write to the zero page
-    - Set up your own pagetables!
+    - Yes you can. Welcome to (identity-mapped) kernel space. Set up your own pagetables!
 - Do I really need a cross-compiler to work on this project?
     - No, that is a misconception that the OSdev community holds dear to its heart, but its not necessary. The Linux-native compilers will use FS/GS for TLS, and will require you to fake the table that (among other things) contain the stack sentinel value. Otherwise, you can reasonably expect normal library calls to be optimized (printf -> write).
 
@@ -86,14 +87,6 @@ Returned from kernel_start! Halting...
 - The basic foundation has been laid down
 - Linker script needs to be amended to store .tbss and .tdata sections
 - Functionality for creating new thread storage needs to be created
-
-## Symmetric Multi-Processing
-
-- Enumerate other APICs from ACPI table
-- Activate the main LAPIC, then from that activate the other LAPICS
-- Create PER-CPU tables and assign each cpu to separate GS segments
-- While you don't strictly need interrupts just to start the CPUs, you really want it so that you can send signals to activate work
-- Virtual CPUs are just a thread on the Qemu hypervisor
 
 ## Qemu defaults
 
