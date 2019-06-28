@@ -23,8 +23,14 @@ case $i in
 esac
 done
 
+mkdir -p build
+pushd build
+cmake ..
 make -j4 $OPTION
+BINARY=build/`cat binary.txt`
+popd
 
 # NOTE: if building with -march=native, make sure to enable KVM,
 # as emulated qemu only supports up to SSE3 instructions
-qemu-system-x86_64 $KVM -kernel tools/chainloader -initrd `make executable` $GRAPHICS
+qemu-system-x86_64 $KVM -kernel tools/chainloader -initrd $BINARY $GRAPHICS
+#qemu-system-x86_64 $KVM -kernel tools/chainloader -initrd mykernel $GRAPHICS
