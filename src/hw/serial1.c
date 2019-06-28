@@ -5,42 +5,42 @@ static char initialized __attribute__((section(".data"))) = 0;
 
 static inline uint8_t inb(int port)
 {
-  int ret;
-  __asm__ ("xorl %eax,%eax");
-  __asm__ ("inb %%dx,%%al":"=a" (ret):"d"(port));
-  return ret;
+	int ret;
+	asm ("xorl %eax,%eax");
+	asm ("inb %%dx,%%al":"=a" (ret):"d"(port));
+	return ret;
 }
 static inline void outb(int port, uint8_t data)
 {
-  __asm__ ("outb %%al,%%dx"::"a" (data), "d"(port));
+	asm ("outb %%al,%%dx"::"a" (data), "d"(port));
 }
 
 static inline void init_serial_if_needed()
 {
-  if (initialized) return;
-  initialized = 1;
-  // properly initialize serial port
-  outb(port + 1, 0x00);    // Disable all interrupts
-  outb(port + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-  outb(port + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
-  outb(port + 1, 0x00);    //                  (hi byte)
-  outb(port + 3, 0x03);    // 8 bits, no parity, one stop bit
-  outb(port + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
+	if (initialized) return;
+	initialized = 1;
+	// properly initialize serial port
+	outb(port + 1, 0x00);    // Disable all interrupts
+	outb(port + 3, 0x80);    // Enable DLAB (set baud rate divisor)
+	outb(port + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
+	outb(port + 1, 0x00);    //                  (hi byte)
+	outb(port + 3, 0x03);    // 8 bits, no parity, one stop bit
+	outb(port + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
 }
 
 void __serial_print1(const char* cstr)
 {
-  init_serial_if_needed();
-  while (*cstr) {
-    while (!(inb(port + 5) & 0x20));
-    outb(port, *cstr++);
-  }
+	init_serial_if_needed();
+	while (*cstr) {
+	while (!(inb(port + 5) & 0x20));
+		outb(port, *cstr++);
+	}
 }
 void __serial_print(const char* str, int len)
 {
-  init_serial_if_needed();
-  for (int i = 0; i < len; i++) {
-    while (!(inb(port + 5) & 0x20));
-    outb(port, str[i]);
-  }
+	init_serial_if_needed();
+	for (int i = 0; i < len; i++) {
+	while (!(inb(port + 5) & 0x20));
+		outb(port, str[i]);
+	}
 }
