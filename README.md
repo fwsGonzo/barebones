@@ -1,7 +1,7 @@
 # Barebones multiboot kernel
 
 - Intended for beginner OS development
-- Install qemu for qemu-system-x86_64, gcc for a 64-bit compiler and nasm for the assembly
+- Run the dependency installation script (or install the equivalent packages)
 - Build and boot kernel in qemu with ./run.sh
 - If building with -march=native (or anything that requires AVX), remember to run with KVM enabled (./run.sh --kvm) so that QEMU will present the modern instruction set features to the guest operating system.
 - VGA textmode using ./run.sh --vga (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)

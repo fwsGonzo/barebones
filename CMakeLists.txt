@@ -32,20 +32,6 @@ set(SOURCES
 	src/kernel/start64.asm
   )
 
-# EASTL C++ library
-if (EASTL)
-	add_library(eastl STATIC
-		ext/EASTL/source/allocator_eastl.cpp ext/EASTL/source/assert.cpp
-		ext/EASTL/source/fixed_pool.cpp ext/EASTL/source/hashtable.cpp
-		ext/EASTL/source/intrusive_list.cpp ext/EASTL/source/numeric_limits.cpp
-		ext/EASTL/source/red_black_tree.cpp ext/EASTL/source/string.cpp
-	)
-	target_include_directories(eastl PUBLIC
-		ext/EASTL/include
-		ext/EASTL/test/packages/EABase/include/Common
-	)
-endif()
-
 enable_language(ASM_NASM)
 set(ELF_FORMAT "x86_64")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
@@ -60,10 +46,13 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-MMD ${CAPABS} ${OPTIMIZE} -std=${CPP_VERSION}")
 set(CMAKE_C_FLAGS "-MMD ${CAPABS} ${OPTIMIZE} -std=${C_VERSION}")
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	if (LTO_ENABLE)
+if (LTO_ENABLE)
+	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=thin")
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto=thin")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto")
 	endif()
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
@@ -85,12 +74,14 @@ endif()
 add_executable(kernel ${SOURCES})
 set_target_properties(kernel PROPERTIES OUTPUT_NAME ${BINARY_NAME})
 target_include_directories(kernel PRIVATE src)
-if (EASTL)
-	target_link_libraries(kernel eastl)
-endif()
 
 target_compile_definitions(kernel PRIVATE KERNEL_BINARY="${BINARY_NAME}")
 target_compile_definitions(kernel PRIVATE KERNEL_DESC="${KERNEL_DESC}")
+
+add_subdirectory(ext)
+if (EASTL)
+	target_link_libraries(kernel eastl)
+endif()
 
 # linker stuff
 set(CMAKE_LINKER ${LINKER_EXE})
