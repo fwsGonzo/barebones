@@ -29,6 +29,10 @@ Use ./run.ssh to build and run your kernel.
 - Use argument --vga to get a graphical window, which starts out in VGA textmode accessible at 0xb8000.
 - Use argument --sanitize to enable the undefined-sanitizer, catching problems like misaligned accesses and overflows.
 
+## Changing build options
+
+Go into the build folder and type `ccmake ..`, which opens a GUI with some adjustable settings. After changing settings press C to configure the changes, and then E to exit the GUI. Changes will be rebuilt automatically using run.sh, or you could simply use `make` like normally in the build folder itself.
+
 ## Goal
 
 The goal is to provide a barebones kernel project that implements the most basic C/C++ voodoo to let people start reading/writing to registers and devices immediately. The goal is also to provide people with a choice of using C or C++, or a mix of both.
