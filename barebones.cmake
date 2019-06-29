@@ -11,7 +11,6 @@ set(C_VERSION   "gnu11" CACHE STRING "C version compiler argument")
 set(LINKER_EXE  "ld"    CACHE STRING "Linker to use")
 
 set(BBPATH ${CMAKE_CURRENT_LIST_DIR})
-message(STATUS "BBPATH is ${BBPATH}")
 
 enable_language(ASM_NASM)
 set(ELF_FORMAT "x86_64")
