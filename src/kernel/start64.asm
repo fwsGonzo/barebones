@@ -37,18 +37,11 @@ extern kernel_start
   add esp, 4
 %endmacro
 
-SECTION .data
-mb_magic:  dd 0
-mb_addr:   dd 0
+extern multiboot_data_location
+extern multiboot_data_address
 
 SECTION .text
 begin_enter_longmode:
-    ;; save multiboot arguments
-    mov eax, DWORD [esp-8]
-    mov DWORD [mb_addr],  eax
-    mov eax, DWORD [esp-12]
-    mov DWORD [mb_magic], eax
-    
     ;; disable old paging
     mov eax, cr0
     and eax, 0x7fffffff  ;; clear PG (bit 31)
@@ -156,8 +149,8 @@ long_mode:
     mov QWORD [tls+0x28], rax
 
     ;; geronimo!
-    mov  edi, DWORD[mb_magic]
-    mov  esi, DWORD[mb_addr]
+    mov  edi, DWORD[multiboot_data_location]
+    mov  esi, DWORD[multiboot_data_address]
     call kernel_start
     ;; warning that we returned from kernel_start
     mov rdi, strings.panic

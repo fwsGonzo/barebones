@@ -24,6 +24,12 @@ section .multiboot
   dd _end
   dd _start
 
+section .data
+multiboot_data_location:  dd 0
+multiboot_data_address:   dd 0
+global multiboot_data_location
+global multiboot_data_address
+
 [BITS 32]
 section .text
 global _start ;; make _start a global symbol
@@ -51,8 +57,8 @@ rock_bottom:
     ;; align stack to 16 bytes
     sub esp, 8
     ;; store multiboot params
-    push ebx
-    push eax
+	mov DWORD [multiboot_data_location], eax
+	mov DWORD [multiboot_data_address],  ebx
 
     ;;ASM_PRINT(strings.phase1)
     call enable_cpu_feat
