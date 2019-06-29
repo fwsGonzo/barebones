@@ -7,8 +7,8 @@ set(KERNEL_SOURCES
 	crt/c_stubs.c
 	crt/heap.c
 	crt/malloc.c
+	crt/print.c
 	crt/ubsan.c
-	prnt/print.c
 	# .cpp files
 	crt/cxxabi.cpp
 	kernel/tls.cpp
