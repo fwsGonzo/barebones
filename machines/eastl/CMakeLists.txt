@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.9)
 project (kernel C CXX)
 
 option(EASTL "" ON)
+option(RTTI_EXCEPTIONS "" ON)
 include(../../barebones.cmake)
 
 add_machine_image(

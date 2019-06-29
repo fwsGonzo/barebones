@@ -6,6 +6,7 @@ option(STACK_PROTECTOR "Enable stack protector (SSP)" ON)
 option(UBSAN           "Enable the undefined sanitizer" OFF)
 option(STRIPPED        "Strip the executable" OFF)
 option(DEBUG           "Build and preserve debugging information" OFF)
+option(RTTI_EXCEPTIONS "Enable C++ RTTI and exceptions" OFF)
 set(CPP_VERSION "c++17" CACHE STRING "C++ version compiler argument")
 set(C_VERSION   "gnu11" CACHE STRING "C version compiler argument")
 set(LINKER_EXE  "ld"    CACHE STRING "Linker to use")
@@ -16,7 +17,8 @@ enable_language(ASM_NASM)
 set(ELF_FORMAT "x86_64")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
 set(OBJCOPY_TARGET "elf64-x86-64")
-set(CAPABS "-Wall -Wextra -g -m64 -ffreestanding -fno-omit-frame-pointer")
+set(TARGET_TRIPLE  "x86_64-pc-linux")
+set(CAPABS "-Wall -Wextra -g -m64 -ffreestanding -fno-omit-frame-pointer -fPIE")
 
 # Optimization flags
 set(OPTIMIZE "-mfpmath=sse -msse3")
@@ -40,8 +42,19 @@ if (LTO_ENABLE)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto")
 	endif()
+	# BUG: workaround for LTO bug
+	set(KERNEL_LIBRARY --whole-archive kernel --no-whole-archive)
+else()
+	set(KERNEL_LIBRARY kernel)
 endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
+
+if (NOT RTTI_EXCEPTIONS)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
+endif()
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -target ${TARGET_TRIPLE}")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -target ${TARGET_TRIPLE}")
+endif()
 
 # Sanitizer options
 if (UBSAN)
@@ -74,6 +87,34 @@ elseif (NOT DEBUG)
 	set(LDFLAGS "${LDFLAGS} -S")
 endif()
 
+# Compiler, C and C++ libraries
+include(ExternalProject)
+ExternalProject_Add(exceptions
+			PREFIX exceptions
+			URL https://github.com/fwsGonzo/barebones/releases/download/exceptions/exceptions.zip
+			URL_HASH SHA1=8851485a7134eb8743069439235c1a2a9728ea58
+			CONFIGURE_COMMAND ""
+			BUILD_COMMAND ""
+			UPDATE_COMMAND ""
+			INSTALL_COMMAND ""
+		)
+
+add_library(libgcc STATIC IMPORTED)
+set_target_properties(libgcc PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(libgcc PROPERTIES IMPORTED_LOCATION exceptions/src/exceptions/libgcc.a)
+add_dependencies(libgcc exceptions)
+
+if (RTTI_EXCEPTIONS)
+	add_library(cxxabi STATIC IMPORTED)
+	set_target_properties(cxxabi PROPERTIES LINKER_LANGUAGE CXX)
+	set_target_properties(cxxabi PROPERTIES IMPORTED_LOCATION exceptions/src/exceptions/libc++abi.a)
+	add_dependencies(cxxabi exceptions)
+
+	set(LDFLAGS "${LDFLAGS} --eh-frame-hdr")
+	set(CXX_ABI_LIBS cxxabi)
+endif()
+
+# Machine image creation
 function(add_machine_image NAME BINARY_NAME BINARY_DESC)
 	add_executable(${NAME} ${ARGN})
 	set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${BINARY_NAME})
@@ -88,7 +129,17 @@ function(add_machine_image NAME BINARY_NAME BINARY_DESC)
 	endif()
 
 	add_subdirectory(${BBPATH}/src src)
-	target_link_libraries(${NAME} kernel tinyprintf)
+
+	target_link_libraries(${NAME}
+		# BUG: unfortunately, there is an LLD bug that prevents ASM objects
+		# from linking with outside files that are in archives, unless they are
+		# --whole-archived, but it is a small inconvinience to add these manually
+		${KERNEL_LIBRARY}
+		tinyprintf
+		${CXX_ABI_LIBS}
+		libgcc
+		kernel
+	)
 
 	set_target_properties(${NAME} PROPERTIES LINK_FLAGS "${LDFLAGS}")
 	# write out the binary name to a known file to simplify some scripts

@@ -31,12 +31,6 @@ extern kernel_start
 ;; EFER Syscall enable bit
 %define SYSCALL_ENABLE 0x1
 
-%macro ASM_PRINT 1
-  push %1
-  call __serial_print1
-  add esp, 4
-%endmacro
-
 extern multiboot_data_magic
 extern multiboot_data_address
 

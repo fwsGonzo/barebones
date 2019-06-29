@@ -1,6 +1,6 @@
 #include <main.h>
 #include <assert.h>
-#include <kprint.hpp>
+#include <kprint.h>
 #include <x86intrin.h>
 static bool test_sse();
 static int  test_value = 0;

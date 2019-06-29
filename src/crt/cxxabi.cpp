@@ -1,7 +1,7 @@
+#include <kprint.h>
 #include <new>
 #include <cstddef>
 #include <cstring>
-#include <kprint.hpp>
 extern "C" void* malloc(size_t);
 extern "C" void free(void*);
 

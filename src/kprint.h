@@ -1,4 +1,9 @@
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <hw/serial.h>
 
 // better, more familiar way to print!
@@ -11,3 +16,7 @@ static inline void kprint(const char* text)
 }
 
 #include <tinyprintf.h>
+
+#ifdef __cplusplus
+}
+#endif

@@ -40,6 +40,29 @@ SECTIONS
     KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
     PROVIDE_HIDDEN (__init_array_end = .);
   }
+  /*.fini_array :
+  {
+    PROVIDE_HIDDEN (__fini_array_start = .);
+    KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
+    KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
+    PROVIDE_HIDDEN (__fini_array_end = .);
+  }*/
+
+  /* For stack unwinding (exception handling)  */
+  .eh_frame_hdr ALIGN(0x8):
+  {
+    KEEP(*(.eh_frame_hdr*))
+  }
+  .eh_frame ALIGN(0x8):
+  {
+  	PROVIDE (__eh_frame_start = .);
+    KEEP(*(.eh_frame))
+    LONG (0);
+  }
+  .gcc_except_table :
+  {
+    *(.gcc_except_table)
+  }
 
   .data :
   {

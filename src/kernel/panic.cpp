@@ -1,7 +1,5 @@
-#include <cstdint>
-extern "C" {
 #include <kprint.h>
-}
+#include <cstdio>
 
 #define frp(N, ra)                                 \
   (__builtin_frame_address(N) != nullptr) &&       \
@@ -44,4 +42,10 @@ void panic(const char* reason)
   kprintf("\nKernel halting...\n");
   while (1) asm("cli; hlt");
   __builtin_unreachable();
+}
+
+extern "C"
+void abort()
+{
+	panic("Abort called");
 }

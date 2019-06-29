@@ -1,5 +1,7 @@
-#include <stdint.h>
 #include <assert.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 static uintptr_t heap_start;
 static uintptr_t heap_end;
@@ -25,4 +27,13 @@ void* sbrk(intptr_t increment)
 		return (void*) old;
 	}
 	return (void*) -1;
+}
+
+int posix_memalign(void **memptr, size_t alignment, size_t size)
+{
+	uintptr_t addr = (uintptr_t) malloc(size + alignment);
+	const intptr_t offset = addr & (alignment-1);
+	if (offset) addr += (alignment-1) - offset;
+	*memptr = (void*) addr;
+	return 0;
 }
