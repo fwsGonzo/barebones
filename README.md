@@ -2,9 +2,9 @@
 
 - Intended for beginner OS development
 - Run the dependency installation script (or install the equivalent packages)
-- Build and boot kernel in qemu with `./run.sh default`.
+- Build and boot kernel in Qemu with `./run.sh default`.
 	- You can run any of the machines in the `machines` folder this way.
-- If building with -march=native (or anything that requires AVX), remember to run with KVM enabled (./run.sh --kvm) so that QEMU will present the modern instruction set features to the guest operating system.
+- If building with the NATIVE option (or anything that requires AVX), remember to run with KVM enabled (./run.sh --kvm) so that Qemu will present the modern instruction set features to the guest operating system.
 - VGA textmode using ./run.sh --vga (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)
 - Use ./build_iso.sh to run on real hardware or a hypervisor like VirtualBox, but keep serial port logging in mind!
 
@@ -18,9 +18,11 @@
 - Stack protector support
 - EASTL C++ support, which has many useful containers
 - Produces tiny machine images
-	- Entire machine image is 8560 bytes with minimal build on Clang 8
+	- Machine image is 5992 bytes with minimal stripped build on GCC 9.1
+	- Machine image is 8560 bytes with minimal stripped build on Clang 8
 	- 14kb with all options normal and LTO enabled on Clang 8
 	- 23kb with all options normal on GCC 9.1
+	- Remember to disable stack protector to shave a few extra bytes off!
 - LTO and ThinLTO support if you are using clang
 - Undefined-sanitizer support to catch some problems during runtime
 - Option to unmap zero page (for the very common null-pointer access bugs)
@@ -28,14 +30,15 @@
 
 ## Running
 
-Use ./run.ssh to build and run your kernel.
+Use `./run.sh <folder>` to build and run your kernel stored in machines folder.
+- By default run.sh will build and run the `default` machine. The project is located in `machines/default/` and most of the output comes from `main.cpp`.
 - Use argument --kvm if you want to use hardware-accelerated virtualization, or you have built with -march=native in which you must use that. Enable virtualization in your BIOS settings if you haven't.
 - Use argument --vga to get a graphical window, which starts out in VGA textmode accessible at 0xb8000.
 - Use argument --sanitize to enable the undefined-sanitizer, catching problems like misaligned accesses and overflows.
 
 ## Changing build options
 
-Go into the build folder and type `ccmake ..`, which opens a GUI with some adjustable settings. After changing settings press C to configure the changes, and then E to exit the GUI. Changes will be rebuilt automatically using run.sh, or you could simply use `make` like normally in the build folder itself.
+Go into the build folder in your machines folder and type `ccmake ..`, which opens a GUI with some adjustable settings. After changing settings press C to configure the changes, and then E to exit the GUI. Changes will be rebuilt automatically using run.sh, or you could simply use `make` like normally in the build folder itself.
 
 ## Goal
 
@@ -59,7 +62,7 @@ The goal is to provide a barebones kernel project that implements the most basic
 * Global constructors ... work!
 
 Hello OSdev world!
-This is kernel_main(uint32_t, uint32_t).
+my_kernel (This is a test kernel!)
 
 Press Ctrl+A -> X to close
 Returned from kernel_start! Halting...
@@ -77,6 +80,10 @@ Returned from kernel_start! Halting...
     - Yes you can. Welcome to (identity-mapped) kernel space. Set up your own pagetables!
 - Do I really need a cross-compiler to work on this project?
     - No, that is a misconception that the OSdev community holds dear to its heart, but its not necessary. The Linux-native compilers will use FS/GS for TLS, and will require you to fake the table that (among other things) contain the stack sentinel value. Otherwise, you can reasonably expect normal library calls to be optimized (printf -> write).
+- When booting the GRUB image nothing happens, it looks to be crashing etc.
+	- Make sure you didn't compile with GCC and then link with LLD, and especially don't mix LTO into this.
+	- Minimal builds can be risky, especially -Oz on clang.
+	- There could be a genuine issue, so let me know.
 
 ## Undefined sanitizer
 
