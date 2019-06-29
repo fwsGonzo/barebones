@@ -11,7 +11,7 @@ static void print_trace(const int N, const void* ra)
 {
   static char buffer[4096];
   snprintf(buffer, sizeof(buffer),
-          "[%d] 0x%x\n",
+          "[%d] %p\n",
           N, ra);
   kprint(buffer);
 }

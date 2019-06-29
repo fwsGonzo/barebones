@@ -38,6 +38,8 @@ void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
 		*bss = 0;
 	}
 
+	init_printf(NULL, __serial_putchr);
+
 	// 2. find end of multiboot areas
 	void* free_begin = multiboot_free_begin(mb_addr);
 

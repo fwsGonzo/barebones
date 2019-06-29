@@ -111,7 +111,7 @@ void __ubsan_handle_shift_out_of_bounds()
   undefined_throw("Shift out-of-bounds");
 }
 
-void __ubsan_handle_type_mismatch_v1(struct mismatch* data, unsigned long ptr)
+void __ubsan_handle_type_mismatch_v1(struct mismatch* data, uintptr_t ptr)
 {
   print_src_location(&data->src);
 
@@ -127,11 +127,11 @@ void __ubsan_handle_type_mismatch_v1(struct mismatch* data, unsigned long ptr)
   char buffer[2048];
   // TODO: resolve symbol name
   snprintf(buffer, sizeof(buffer),
-          "%s on ptr 0x%x  (aligned %u)\n"
+          "%s on ptr %p  (aligned %lu)\n"
           "ubsan: type name %s\n",
           reason,
-          (uint32_t) (uintptr_t) ptr,
-          (uint32_t) alignment,
+          (void*) ptr,
+          alignment,
           data->type->type_name);
   undefined_throw(buffer);
 }

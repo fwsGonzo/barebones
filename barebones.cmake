@@ -45,8 +45,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
 
 # Sanitizer options
 if (UBSAN)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fno-sanitize=vptr")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined -fno-sanitize=vptr")
+	set(UBSAN_PARAMS "-fsanitize=undefined -fno-sanitize=vptr -DUBSAN_ENABLED")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${UBSAN_PARAMS}")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${UBSAN_PARAMS}")
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-sanitize=function")
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-sanitize=function")
@@ -81,13 +82,14 @@ function(add_machine_image NAME BINARY_NAME BINARY_DESC)
 	target_compile_definitions(${NAME} PRIVATE KERNEL_BINARY="${BINARY_NAME}")
 	target_compile_definitions(${NAME} PRIVATE KERNEL_DESC="${BINARY_DESC}")
 
-	add_subdirectory(${BBPATH}/src src)
-	target_link_libraries(${NAME} kernel)
-
 	add_subdirectory(${BBPATH}/ext ext)
 	if (EASTL)
 		target_link_libraries(${NAME} eastl)
 	endif()
+
+	add_subdirectory(${BBPATH}/src src)
+	target_link_libraries(${NAME} kernel tinyprintf)
+
 	set_target_properties(${NAME} PROPERTIES LINK_FLAGS "${LDFLAGS}")
 	# write out the binary name to a known file to simplify some scripts
 	file(WRITE ${CMAKE_BINARY_DIR}/binary.txt ${BINARY_NAME})

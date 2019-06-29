@@ -44,3 +44,14 @@ void __serial_print(const char* str, int len)
 		outb(port, str[i]);
 	}
 }
+void __serial_putchr(const void* file, char c)
+{
+	static char buffer[256];
+	static unsigned cnt = 0;
+	(void) file;
+	buffer[cnt++] = c;
+	if (c == '\n' || cnt == sizeof(buffer)) {
+		__serial_print(buffer, cnt);
+		cnt = 0;
+	}
+}

@@ -25,9 +25,9 @@ section .multiboot
   dd _start
 
 section .data
-multiboot_data_location:  dd 0
-multiboot_data_address:   dd 0
-global multiboot_data_location
+multiboot_data_magic:     dq 0
+multiboot_data_address:   dq 0
+global multiboot_data_magic
 global multiboot_data_address
 
 [BITS 32]
@@ -54,10 +54,8 @@ rock_bottom:
     mov esp, STACK_LOCATION
     mov ebp, esp
 
-    ;; align stack to 16 bytes
-    sub esp, 8
     ;; store multiboot params
-	mov DWORD [multiboot_data_location], eax
+	mov DWORD [multiboot_data_magic],    eax
 	mov DWORD [multiboot_data_address],  ebx
 
     ;;ASM_PRINT(strings.phase1)

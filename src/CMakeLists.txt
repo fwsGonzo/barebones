@@ -8,7 +8,6 @@ set(KERNEL_SOURCES
 	crt/malloc.c
 	crt/ubsan.c
 	prnt/print.c
-	prnt/mini-printf.c
 	# .cpp files
 	crt/cxxabi.cpp
 	kernel/tls.cpp
@@ -20,6 +19,7 @@ set(KERNEL_SOURCES
 
 add_library(kernel STATIC ${KERNEL_SOURCES})
 target_include_directories(kernel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(kernel tinyprintf)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set_source_files_properties(

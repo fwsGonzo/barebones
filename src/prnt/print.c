@@ -35,7 +35,7 @@ int kprintf(const char* fmt, ...)
 	char buffer[4096];
 	va_list va;
 	va_start(va, fmt);
-	int ret = mini_vsnprintf(buffer, sizeof(buffer), fmt, va);
+	int ret = tfp_vsnprintf(buffer, sizeof(buffer), fmt, va);
 	va_end(va);
 
 	kprint(buffer);

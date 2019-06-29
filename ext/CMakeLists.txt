@@ -12,3 +12,11 @@ if (EASTL)
 		EASTL/test/packages/EABase/include/Common
 	)
 endif()
+
+# Tiny-printf library
+add_library(tinyprintf STATIC
+		tinyprintf/tinyprintf.c
+	)
+target_include_directories(tinyprintf PUBLIC
+		tinyprintf
+	)

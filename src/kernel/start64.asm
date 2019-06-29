@@ -37,7 +37,7 @@ extern kernel_start
   add esp, 4
 %endmacro
 
-extern multiboot_data_location
+extern multiboot_data_magic
 extern multiboot_data_address
 
 SECTION .text
@@ -149,7 +149,7 @@ long_mode:
     mov QWORD [tls+0x28], rax
 
     ;; geronimo!
-    mov  edi, DWORD[multiboot_data_location]
+    mov  edi, DWORD[multiboot_data_magic]
     mov  esi, DWORD[multiboot_data_address]
     call kernel_start
     ;; warning that we returned from kernel_start
