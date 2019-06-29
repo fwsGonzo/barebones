@@ -40,4 +40,5 @@ void kernel_main(uint32_t /*eax*/, uint32_t /*ebx*/)
 		}
 	}
 	assert(caught == 16);
+	throw IdioticException("This is on purpose");
 }
