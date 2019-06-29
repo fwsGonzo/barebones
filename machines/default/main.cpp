@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include <main.hpp>
 #include <assert.h>
 #include <kprint.hpp>
 #include <x86intrin.h>
@@ -19,7 +19,7 @@ void kernel_main(const uint32_t eax, const uint32_t ebx)
   kprint(
     "\n"
     "Hello OSdev world!\n"
-    "This is kernel_main(uint32_t, uint32_t).\n"
+    KERNEL_BINARY " (" KERNEL_DESC ")\n"
     "\n"
     "Press Ctrl+A -> X to close\n"
   );

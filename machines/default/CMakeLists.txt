@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.8.9)
 project (kernel C CXX)
-
 include(../../barebones.cmake)
 
 add_machine_image(
@@ -9,3 +8,5 @@ add_machine_image(
 	# list of source files
 	main.cpp
 )
+
+target_compile_definitions(mykernel PRIVATE MYTEST="4")
