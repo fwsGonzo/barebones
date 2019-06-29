@@ -1,7 +1,15 @@
 #!/bin/bash
 set -e
-make -j
-KERNEL=`make executable`
+MACHINE=machines/${1-default}
+BUILD_DIR=$MACHINE/build
+
+mkdir -p $BUILD_DIR
+pushd $BUILD_DIR
+cmake ..
+make -j4 $OPTION
+popd
+
+KERNEL=$BUILD_DIR/`cat $BUILD_DIR/binary.txt`
 LOCAL_DISK=temp_disk
 
 # create grub.iso
