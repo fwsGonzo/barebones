@@ -16,7 +16,10 @@
 - C and C++ global constructors
 - Stack protector support
 - EASTL C++ support, which has many useful containers
-- Entire machine image is 19kb (13k without EASTL)
+- Produces tiny machine images
+	- Entire machine image is 8560 bytes with minimal build on Clang 8
+	- 14kb with all options normal and LTO enabled on Clang 8
+	- 23kb with all options normal on GCC 9.1
 - LTO and ThinLTO support if you are using clang
 - Undefined-sanitizer support to catch some problems during runtime
 - Option to unmap zero page (for the very common null-pointer access bugs)
@@ -42,6 +45,7 @@ The goal is to provide a barebones kernel project that implements the most basic
 - Add support for 64-bit sizes in the printf library
 - Add TLS api and support for most thread local variables
 - Add support for LTO with GCC (no ideas on how to do this yet)
+- Optional 512b bootloader to avoid GRUB (although not recommended)
 
 ## Validate output
 
@@ -82,8 +86,9 @@ Returned from kernel_start! Halting...
 
 ## Link-Time Optimization
 
-- Works on clang out of the box, just make sure you use the correct LLD that comes with your compiler
+- Works on Clang out of the box, just make sure you use the correct LLD that comes with your compiler
     - Both ThinLTO and full LTO works!
+	- Enable LTO option with ccmake and set the LINKER_EXE option to point to a lld executable that is compatible with your Clang version. For example `ld.lld-8`.
 - Does not work on GCC at all due to how complicated it is to call the LTO-helpers manually
 
 ## Thread-Local Storage
