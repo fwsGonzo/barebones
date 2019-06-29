@@ -16,6 +16,8 @@ public:
 };
 
 using callback_t = int (*) (eastl::vector<int>&);
+static void test_rtti();
+
 
 void kernel_main(uint32_t /*eax*/, uint32_t /*ebx*/)
 {
@@ -40,5 +42,36 @@ void kernel_main(uint32_t /*eax*/, uint32_t /*ebx*/)
 		}
 	}
 	assert(caught == 16);
+	test_rtti();
 	throw IdioticException("This is on purpose");
+}
+
+class A
+{
+public:
+	virtual void f() { kprintf("A::f() called\n"); }
+};
+
+class B : public A
+{
+public:
+	void f() { kprintf("B::f() called\n"); }
+};
+
+static void test_rtti()
+{
+	A a;
+	B b;
+	a.f();        // A::f()
+	b.f();        // B::f()
+
+	A *pA = &a;
+	B *pB = &b;
+	pA->f();      // A::f()
+	pB->f();      // B::f()
+
+	pA = &b;
+	// pB = &a;      // not allowed
+	pB = dynamic_cast<B*>(&a); // allowed but it returns NULL
+	assert(pB == nullptr);
 }
