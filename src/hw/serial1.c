@@ -32,7 +32,7 @@ void __serial_print1(const char* cstr)
 {
 	init_serial_if_needed();
 	while (*cstr) {
-	while (!(inb(port + 5) & 0x20));
+		while (!(inb(port + 5) & 0x20)) /* */;
 		outb(port, *cstr++);
 	}
 }
@@ -40,7 +40,7 @@ void __serial_print(const char* str, int len)
 {
 	init_serial_if_needed();
 	for (int i = 0; i < len; i++) {
-	while (!(inb(port + 5) & 0x20));
+		while (!(inb(port + 5) & 0x20)) /* */;
 		outb(port, str[i]);
 	}
 }
