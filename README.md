@@ -2,7 +2,8 @@
 
 - Intended for beginner OS development
 - Run the dependency installation script (or install the equivalent packages)
-- Build and boot kernel in qemu with ./run.sh
+- Build and boot kernel in qemu with `./run.sh default`.
+	- You can run any of the machines in the `machines` folder this way.
 - If building with -march=native (or anything that requires AVX), remember to run with KVM enabled (./run.sh --kvm) so that QEMU will present the modern instruction set features to the guest operating system.
 - VGA textmode using ./run.sh --vga (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)
 - Use ./build_iso.sh to run on real hardware or a hypervisor like VirtualBox, but keep serial port logging in mind!

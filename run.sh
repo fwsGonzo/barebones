@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 GRAPHICS=-nographic
-BUILD_DIR=build
 
 for i in "$@"
 do
@@ -28,6 +27,9 @@ case $i in
     ;;
 esac
 done
+
+MACHINE=machines/${1-default}
+BUILD_DIR=$MACHINE/build
 
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR

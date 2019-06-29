@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 2.8.9)
-project (kernel C CXX)
-
 option(NATIVE          "Compile natively for this CPU" OFF)
 option(MINIMAL         "Compile small executable" OFF)
 option(EASTL           "Compile with EASTL C++ library" OFF)
@@ -13,26 +10,8 @@ set(CPP_VERSION "c++17" CACHE STRING "C++ version compiler argument")
 set(C_VERSION   "gnu11" CACHE STRING "C version compiler argument")
 set(LINKER_EXE  "ld"    CACHE STRING "Linker to use")
 
-set(KERNEL_DESC  "This is a test kernel!")
-set(BINARY_NAME  "my_kernel")
-set(SOURCES
-	# .c files
-	src/kernel/kernel_start.c
-	src/hw/serial1.c
-	src/crt/c_abi.c
-	src/crt/heap.c
-	src/crt/malloc.c
-	src/crt/ubsan.c
-	src/prnt/print.c
-	src/prnt/mini-printf.c
-	# .cpp files
-	src/main.cpp
-	src/crt/cxxabi.cpp
-	src/kernel/tls.cpp src/kernel/panic.cpp
-	# .asm files (for NASM)
-	src/kernel/start.asm
-	src/kernel/start64.asm
-  )
+set(BBPATH ${CMAKE_CURRENT_LIST_DIR})
+message(STATUS "BBPATH is ${BBPATH}")
 
 enable_language(ASM_NASM)
 set(ELF_FORMAT "x86_64")
@@ -75,18 +54,6 @@ if (STACK_PROTECTOR)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstack-protector-strong")
 endif()
 
-add_executable(kernel ${SOURCES})
-set_target_properties(kernel PROPERTIES OUTPUT_NAME ${BINARY_NAME})
-target_include_directories(kernel PRIVATE src)
-
-target_compile_definitions(kernel PRIVATE KERNEL_BINARY="${BINARY_NAME}")
-target_compile_definitions(kernel PRIVATE KERNEL_DESC="${KERNEL_DESC}")
-
-add_subdirectory(ext)
-if (EASTL)
-	target_link_libraries(kernel eastl)
-endif()
-
 # linker stuff
 set(CMAKE_LINKER ${LINKER_EXE})
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS) # this removed -rdynamic from linker output
@@ -95,14 +62,30 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> -o <TARGET> <LINK_FLAGS> <OBJECTS>
 
 string(RANDOM LENGTH 16 ALPHABET 0123456789abcdef SSP_VALUE)
 # Add --eh-frame-hdr for exception tables
-set(LDSCRIPT "${CMAKE_SOURCE_DIR}/src/linker.ld")
+set(LDSCRIPT "${BBPATH}/src/linker.ld")
 set(LDFLAGS "-static -nostdlib -N -melf_${ELF_FORMAT} --script=${LDSCRIPT} --defsym __SSP__=0x${SSP_VALUE}")
 if (NOT DEBUG AND STRIPPED)
 	set(LDFLAGS "${LDFLAGS} -s")
 elseif (NOT DEBUG)
 	set(LDFLAGS "${LDFLAGS} -S")
 endif()
-set_target_properties(kernel PROPERTIES LINK_FLAGS "${LDFLAGS}")
 
-# write out the binary name to a known file to simplify some scripts
-file(WRITE ${CMAKE_BINARY_DIR}/binary.txt ${BINARY_NAME})
+function(add_machine_image NAME BINARY_NAME BINARY_DESC)
+	add_executable(${NAME} ${ARGN})
+	set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${BINARY_NAME})
+	target_include_directories(${NAME} PRIVATE src)
+
+	target_compile_definitions(${NAME} PRIVATE KERNEL_BINARY="${BINARY_NAME}")
+	target_compile_definitions(${NAME} PRIVATE KERNEL_DESC="${BINARY_DESC}")
+
+	add_subdirectory(${BBPATH}/src src)
+	target_link_libraries(${NAME} kernel)
+
+	add_subdirectory(${BBPATH}/ext ext)
+	if (EASTL)
+		target_link_libraries(${NAME} eastl)
+	endif()
+	set_target_properties(${NAME} PROPERTIES LINK_FLAGS "${LDFLAGS}")
+	# write out the binary name to a known file to simplify some scripts
+	file(WRITE ${CMAKE_BINARY_DIR}/binary.txt ${BINARY_NAME})
+endfunction()
