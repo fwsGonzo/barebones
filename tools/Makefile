@@ -1,3 +1,10 @@
+#
+# This is the old Makefile for the project, before moving to CMake
+# if CMake is not for you, then this may still be useful for you to build
+# a single kernel from the source tree. Just keep in mind you need to add
+# your own main file, and that the source tree is outdated. Good luck.
+#
+
 # kernel binary
 OUT = mykernel
 # .c files (add your own!)
