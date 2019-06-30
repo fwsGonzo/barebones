@@ -14,7 +14,7 @@
 - Multiboot parameters passed to kernel start
 - assert(), kprintf() and snprintf()
 - Very basic heap implementation (malloc/free, new/delete)
-- C and C++ global constructors
+- C and C++ global constructors, C++ RTTI and exceptions
 - Stack protector support
 - EASTL C++ support, which has many useful containers
 - Produces tiny machine images
@@ -83,6 +83,8 @@ Returned from kernel_start! Halting...
 	- Make sure you didn't compile with GCC and then link with LLD, and especially don't mix LTO into this.
 	- Minimal builds can be risky, especially -Oz on clang.
 	- There could be a genuine issue, so let me know.
+- I'm having problems compiling or linking when using exceptions!
+	- Make sure that you use your own exceptions, and don't rely on anything that belongs to the C++ standard library, which is not present
 
 ## Undefined sanitizer
 
@@ -103,6 +105,13 @@ Returned from kernel_start! Halting...
 - The basic foundation has been laid down
 - Linker script needs to be amended to store .tbss and .tdata sections
 - Functionality for creating new thread storage needs to be created
+
+## EASTL, RTTI and exceptions
+
+- To make use of EASTL you will need to enable the EASTL CMake option
+	- Tons of useful containers that work right out of the box
+- To use RTTI and exceptions in C++ you will need to enable the RTTI_EXCEPTIONS option
+	- This option bloats the binary a great deal, due to the C++ ABI bundles, as well as the libgcc dependency
 
 ## Qemu defaults
 
