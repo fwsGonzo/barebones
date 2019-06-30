@@ -94,9 +94,8 @@ const Elf64_Shdr* section_by_name(Elf64_Ehdr* hdr, const char* name)
 }
 
 static const Elf64_Sym*
-resolve_dyn_idx(Elf64_Ehdr* hdr, uint32_t symidx)
+resolve_dyn_idx(Elf64_Ehdr* hdr, const Elf64_Shdr* shdr, uint32_t symidx)
 {
-	const auto* shdr = section_by_name(hdr, ".dynsym");
 	assert(symidx < shdr->sh_size / sizeof(Elf64_Sym));
 	auto* symtab = elf_offset<Elf64_Sym>(hdr, shdr->sh_offset);
 	return &symtab[symidx];
@@ -112,11 +111,12 @@ static void elf_print_sym(const Elf64_Sym* sym)
 static void elf_relocate_section(Elf64_Ehdr* hdr, const char* section_name)
 {
 	const auto* rela = section_by_name(hdr, section_name);
+	const auto* dyn_hdr = section_by_name(hdr, ".dynsym");
 	const size_t rela_ents = rela->sh_size / sizeof(Elf64_Rela);
 	auto* rela_addr = elf_offset<Elf64_Rela>(hdr, rela->sh_offset);
 	for (size_t i = 0; i < rela_ents; i++) {
 		const uint32_t symidx = ELF64_R_SYM(rela_addr[i].r_info);
-		auto* sym = resolve_dyn_idx(hdr, symidx);
+		auto* sym = resolve_dyn_idx(hdr, dyn_hdr, symidx);
 
 		const uint8_t type = ELF64_ST_TYPE(sym->st_info);
 		if (type == STT_FUNC || type == STT_OBJECT)
