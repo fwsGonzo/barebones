@@ -7,12 +7,12 @@
 extern char _binary_mylib_start;
 extern char _binary_mylib_end;
 #include <kernel/dylib.hpp>
-#include "library/library.hpp"
+#include "library/interface.hpp" // a made-up interface
 
 void kernel_main(const uint32_t, const uint32_t)
 {
 	// load address is the start of the mylib blob
-	auto* hdr = Dylib::load(&_binary_mylib_start);
+	const auto* hdr = Dylib::load(&_binary_mylib_start);
 	assert(hdr != nullptr);
 
 	// translate init function name into symbol and create callable function
@@ -26,6 +26,6 @@ void kernel_main(const uint32_t, const uint32_t)
 	table.free = free;
 
 	// call into library function
-	int result = init(&table);
+	const int result = init(&table);
 	kprintf("init call result: %d\n", result);
 }

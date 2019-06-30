@@ -16,19 +16,19 @@ bool Elf::validate(Elf64_Ehdr* hdr)
 }
 
 template <typename T>
-inline T* elf_offset(Elf64_Ehdr* hdr, intptr_t ofs) {
+inline T* elf_offset(const Elf64_Ehdr* hdr, intptr_t ofs) {
   return (T*) &((char*) hdr)[ofs];
 }
 
 static const Elf64_Sym*
-elf_sym_index(Elf64_Ehdr* hdr, const Elf64_Shdr* shdr, uint32_t symidx)
+elf_sym_index(const Elf64_Ehdr* hdr, const Elf64_Shdr* shdr, uint32_t symidx)
 {
 	assert(symidx < shdr->sh_size / sizeof(Elf64_Sym));
 	auto* symtab = elf_offset<Elf64_Sym>(hdr, shdr->sh_offset);
 	return &symtab[symidx];
 }
 
-const Elf64_Shdr* Elf::section_by_name(Elf64_Ehdr* hdr, const char* name)
+const Elf64_Shdr* Elf::section_by_name(const Elf64_Ehdr* hdr, const char* name)
 {
 	const auto* shdr = elf_offset<Elf64_Shdr> (hdr, hdr->e_shoff);
 	const auto& shstrtab = shdr[hdr->e_shnum-1];
@@ -44,7 +44,7 @@ const Elf64_Shdr* Elf::section_by_name(Elf64_Ehdr* hdr, const char* name)
 	return nullptr;
 }
 
-const Elf64_Sym* Elf::resolve_name(Elf64_Ehdr* hdr, const char* name)
+const Elf64_Sym* Elf::resolve_name(const Elf64_Ehdr* hdr, const char* name)
 {
 	const auto* sym_hdr = Elf::section_by_name(hdr, ".symtab");
 	assert(sym_hdr != nullptr);

@@ -1,4 +1,4 @@
-#include "library.hpp"
+#include "interface.hpp"
 static int test_value = 666;
 
 struct Test {
