@@ -31,11 +31,13 @@ done
 MACHINE=machines/${1-default}
 BUILD_DIR=$MACHINE/build
 
+pushd $MACHINE
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 cmake ..
 make -j4 $OPTION
 BINARY=$BUILD_DIR/`cat binary.txt`
+popd
 popd
 
 # NOTE: if building with -march=native, make sure to enable KVM,
