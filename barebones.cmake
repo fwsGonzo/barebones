@@ -11,8 +11,6 @@ set(CPP_VERSION "c++17" CACHE STRING "C++ version compiler argument")
 set(C_VERSION   "gnu11" CACHE STRING "C version compiler argument")
 set(LINKER_EXE  "ld"    CACHE STRING "Linker to use")
 
-set(BBPATH ${CMAKE_CURRENT_LIST_DIR})
-
 enable_language(ASM_NASM)
 set(ELF_FORMAT "x86_64")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
@@ -74,8 +72,9 @@ endif()
 # linker stuff
 set(CMAKE_LINKER ${LINKER_EXE})
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS) # this removed -rdynamic from linker output
-set(BUILD_SHARED_LIBRARIES OFF)
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> -o <TARGET> <LINK_FLAGS> <OBJECTS> <LINK_LIBRARIES>")
+
+set(BBPATH ${CMAKE_CURRENT_LIST_DIR})
 
 string(RANDOM LENGTH 16 ALPHABET 0123456789abcdef SSP_VALUE)
 # Add --eh-frame-hdr for exception tables
