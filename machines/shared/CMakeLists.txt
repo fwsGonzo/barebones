@@ -8,5 +8,9 @@ add_machine_image(
 	# list of source files
 	main.cpp
 )
+#target_compile_definitions(mykernel PRIVATE MYTEST="4")
 
-target_compile_definitions(mykernel PRIVATE MYTEST="4")
+add_subdirectory(library)
+add_machine_payload(mykernel mylib_payload
+					${CMAKE_BINARY_DIR}/library/libmylib.so mylib)
+add_dependencies(mylib_payload mylib)

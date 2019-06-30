@@ -132,7 +132,7 @@ function(add_machine_image NAME BINARY_NAME BINARY_DESC)
 	target_link_libraries(${NAME}
 		# BUG: unfortunately, there is an LLD bug that prevents ASM objects
 		# from linking with outside files that are in archives, unless they are
-		# --whole-archived, but it is a small inconvinience to add these manually
+		# --whole-archived, which sort of defeats the purpose of LTO
 		${KERNEL_LIBRARY}
 		tinyprintf
 		${CXX_ABI_LIBS}
@@ -143,4 +143,26 @@ function(add_machine_image NAME BINARY_NAME BINARY_DESC)
 	set_target_properties(${NAME} PROPERTIES LINK_FLAGS "${LDFLAGS}")
 	# write out the binary name to a known file to simplify some scripts
 	file(WRITE ${CMAKE_BINARY_DIR}/binary.txt ${BINARY_NAME})
+endfunction()
+
+function(create_payload LIB_NAME BLOB_FILE BLOB_NAME)
+	# call objcopy with curated filename, and then
+	# create a static library LIB_NAME with payload
+	set(OBJECT_FILE ${BLOB_NAME}_generated.o)
+	add_custom_command(
+		OUTPUT ${OBJECT_FILE}
+		# temporarily name blob file as BLOB_NAME so that we can better control
+		# the symbols generated on the inside of the kernel
+		COMMAND cp ${BLOB_FILE} ${BLOB_NAME}
+		COMMAND ${CMAKE_OBJCOPY} -I binary -O ${OBJCOPY_TARGET} -B i386 ${BLOB_NAME} ${OBJECT_FILE}
+		COMMAND rm -f ${BLOB_NAME}
+		DEPENDS ${BLOB_FILE}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	)
+	add_library(${LIB_NAME} STATIC ${OBJECT_FILE})
+	set_target_properties(${LIB_NAME} PROPERTIES LINKER_LANGUAGE C)
+endfunction()
+function (add_machine_payload TARGET LIB_NAME BLOB_FILE BLOB_NAME)
+	create_payload(${LIB_NAME} ${BLOB_FILE} ${BLOB_NAME})
+	target_link_libraries(${TARGET} --whole-archive mylib_payload --no-whole-archive)
 endfunction()
