@@ -11,6 +11,7 @@ set(KERNEL_SOURCES
 	crt/ubsan.c
 	# .cpp files
 	crt/cxxabi.cpp
+	kernel/elf.cpp
 	kernel/tls.cpp
 	kernel/panic.cpp
 	# .asm files (for NASM)
