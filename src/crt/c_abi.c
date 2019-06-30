@@ -13,11 +13,12 @@ void* _impure_ptr = NULL;
 static void* multiboot_free_begin(intptr_t mb_addr)
 {
 	const multiboot_info_t* info = (multiboot_info_t*) mb_addr;
-	uint32_t end = (uintptr_t) &_end;
+	uintptr_t end = (uintptr_t) &_end;
 
 	if (info->flags & MULTIBOOT_INFO_CMDLINE) {
 		const char* cmdline = (char*) (intptr_t) info->cmdline;
-		end = info->cmdline + strlen(cmdline);
+		const uintptr_t pot_end = info->cmdline + strlen(cmdline);
+		if (pot_end > end) end = pot_end;
 	}
 
 	const multiboot_module_t* mod = (multiboot_module_t*) (intptr_t) info->mods_addr;
@@ -27,7 +28,7 @@ static void* multiboot_free_begin(intptr_t mb_addr)
 	{
 		if (mod->mod_end > end) end = mod->mod_end;
 	}
-	return (void*) (intptr_t) end;
+	return (void*) end;
 }
 
 void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
@@ -46,6 +47,7 @@ void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
 
 	// 3. find end of multiboot areas
 	void* free_begin = multiboot_free_begin(mb_addr);
+	assert(free_begin >= (void*) &_end);
 
 	// 4. initialize heap (malloc, etc.)
 	extern void __init_heap(void*);
