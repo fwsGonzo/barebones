@@ -33,7 +33,7 @@ BUILD_DIR=$MACHINE/build
 
 pushd $MACHINE
 mkdir -p $BUILD_DIR
-pushd $BUILD_DIR
+pushd build
 cmake ..
 make -j4 $OPTION
 BINARY=$BUILD_DIR/`cat binary.txt`
