@@ -68,7 +68,14 @@ rock_bottom:
     rdtsc
     mov DWORD [0x1014], eax
 
-    ;; eax, ebx still on stack
+	;; zero .bss (used to be in the C portion, but easier to do here)
+	extern _BSS_START_
+	extern _BSS_END_
+	mov ecx, _BSS_END_
+	sub ecx, _BSS_START_
+	mov eax, 0
+	rep stosb
+
     ;; for 32-bit kernels just call kernel_start here
     call begin_enter_longmode
     add esp, 8

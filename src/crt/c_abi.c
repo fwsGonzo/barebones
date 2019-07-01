@@ -34,33 +34,26 @@ static void* multiboot_free_begin(intptr_t mb_addr)
 void __init_stdlib(uint32_t mb_magic, uint32_t mb_addr)
 {
 	assert(mb_magic == 0x2badb002);
-	// 1. initialize BSS area
-	extern char _BSS_START_;
-	extern char _BSS_END_;
 
-	for (char* bss = &_BSS_START_; bss < &_BSS_END_; bss++) {
-		*bss = 0;
-	}
-
-	// 2. enable printf facilities
+	// 1. enable printf facilities
 	init_printf(NULL, __serial_putchr);
 
-	// 3. find end of multiboot areas
+	// 2. find end of multiboot areas
 	void* free_begin = multiboot_free_begin(mb_addr);
 	assert(free_begin >= (void*) &_end);
 
-	// 4. initialize heap (malloc, etc.)
+	// 3. initialize heap (malloc, etc.)
 	extern void __init_heap(void*);
 	__init_heap(free_begin);
 
 #ifdef EH_ENABLED
-	/// 5. initialize exceptions before we run constructors
+	/// 4. initialize exceptions before we run constructors
     extern char __eh_frame_start[];
     extern void __register_frame(void*);
   	__register_frame(&__eh_frame_start);
 #endif
 
-	// 6. call global C/C++ constructors
+	// 5. call global C/C++ constructors
 	extern void(*__init_array_start [])();
 	extern void(*__init_array_end [])();
 	int count = __init_array_end - __init_array_start;

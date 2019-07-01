@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 static const uint16_t port = 0x3F8; // Serial port 1
-static char initialized __attribute__((section(".data"))) = 0;
+static char initialized = 0;
 
 static inline uint8_t inb(int port)
 {
