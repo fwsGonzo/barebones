@@ -41,7 +41,7 @@ if (LTO_ENABLE)
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto")
 	endif()
 	# BUG: workaround for LTO bug
-	set(KERNEL_LIBRARY --whole-archive kernel --no-whole-archive)
+	set(KERNEL_LIBRARY --whole-archive kernel --no-whole-archive -gc-sections)
 else()
 	set(KERNEL_LIBRARY kernel)
 endif()
@@ -98,9 +98,18 @@ ExternalProject_Add(exceptions
 			INSTALL_COMMAND ""
 		)
 
+# gcc-9 --print-file-name libgcc.a
+execute_process(COMMAND ${CMAKE_C_COMPILER} --print-file-name libgcc_eh.a
+				OUTPUT_VARIABLE LIBGCC_ARCHIVE OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 add_library(libgcc STATIC IMPORTED)
 set_target_properties(libgcc PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(libgcc PROPERTIES IMPORTED_LOCATION exceptions/src/exceptions/libgcc.a)
+if (EXISTS ${LIBGCC_ARCHIVE})
+	set_target_properties(libgcc PROPERTIES IMPORTED_LOCATION ${LIBGCC_ARCHIVE})
+else()
+	# Use this if you don't have a compatible libgcc_eh.a in your system:
+	set_target_properties(libgcc PROPERTIES IMPORTED_LOCATION exceptions/src/exceptions/libgcc.a)
+endif()
 add_dependencies(libgcc exceptions)
 
 if (RTTI_EXCEPTIONS)
