@@ -18,7 +18,7 @@
 - Stack protector support
 - EASTL C++ support, which has many useful containers
 - Produces tiny machine images
-	- Machine image is 11592 bytes with minimal build on GCC 9.1
+	- Machine image is 6944 bytes with minimal build on GCC 9.1
 	- Machine image is 6376 bytes with minimal LTO build on Clang 8
 	- Remember to disable stack protector to shave a few extra bytes off!
 - LTO and ThinLTO support if you are using clang

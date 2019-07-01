@@ -26,7 +26,7 @@ elseif (MINIMAL)
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 		set(OPTIMIZE "${OPTIMIZE} -Oz")
 	else()
-		set(OPTIMIZE "${OPTIMIZE} -Os")
+		set(OPTIMIZE "${OPTIMIZE} -Os -ffunction-sections -fdata-sections")
 	endif()
 endif()
 
@@ -84,6 +84,9 @@ if (NOT DEBUG AND STRIPPED)
 	set(LDFLAGS "${LDFLAGS} -s")
 elseif (NOT DEBUG)
 	set(LDFLAGS "${LDFLAGS} -S")
+endif()
+if (MINIMAL)
+	set(LDFLAGS "${LDFLAGS} --gc-sections")
 endif()
 
 # Compiler, C and C++ libraries
