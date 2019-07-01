@@ -71,6 +71,7 @@ rock_bottom:
 	;; zero .bss (used to be in the C portion, but easier to do here)
 	extern _BSS_START_
 	extern _BSS_END_
+	mov edi, _BSS_START_
 	mov ecx, _BSS_END_
 	sub ecx, _BSS_START_
 	mov eax, 0
