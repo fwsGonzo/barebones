@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdint.h>
 #include <kprint.h>
-#include "tls.h"
 
 static void __init_paging()
 {

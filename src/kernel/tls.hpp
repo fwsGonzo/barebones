@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 
 struct tls_table
 {
@@ -11,4 +11,4 @@ struct tls_table
   uintptr_t pad[3];
   uintptr_t guard; // _SENTINEL_VALUE_
 };
-extern struct tls_table tls;
+extern tls_table tls;
