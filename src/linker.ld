@@ -14,7 +14,7 @@ SECTIONS
 
   .multiboot (_ELF_START_ ): {
       PROVIDE(_MULTIBOOT_START_ = .);
-      *(.multiboot)
+      KEEP(*(.multiboot))
    }
 
   .text ALIGN(0x10) :

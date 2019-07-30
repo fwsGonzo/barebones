@@ -61,13 +61,6 @@ rock_bottom:
     ;;ASM_PRINT(strings.phase1)
     call enable_cpu_feat
 
-    ;; Enable stack protector:
-    ;; GS is located at 0x1000
-    ;; Linux uses GS:0x14 to access stack protector value
-    ;; Copy RDTSC.EAX to this location as preliminary value
-    rdtsc
-    mov DWORD [0x1014], eax
-
 	;; zero .bss (used to be in the C portion, but easier to do here)
 	extern _BSS_START_
 	extern _BSS_END_
@@ -77,9 +70,15 @@ rock_bottom:
 	mov eax, 0
 	rep stosb
 
+	;; Enable stack protector:
+    ;; GS is located at 0x1000
+    ;; Linux uses GS:0x14 to access stack protector value
+    ;; Copy RDTSC.EAX to this location as preliminary value
+    rdtsc
+    mov DWORD [0x1014], eax
+
     ;; for 32-bit kernels just call kernel_start here
     call begin_enter_longmode
-    add esp, 8
     ;; stop
     cli
     hlt

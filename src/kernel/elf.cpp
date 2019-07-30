@@ -68,7 +68,7 @@ const Elf64_Sym* Elf::resolve_name(const Elf64_Ehdr* hdr, const char* name)
 
 static void elf_print_sym(const Elf64_Sym* sym)
 {
-	kprintf("-> Sym is at %p with size %zu, type %u name %u\n",
+	kprintf("-> Sym is at %p with size %llu, type %u name %u\n",
 			(void*) sym->st_value, sym->st_size,
 			ELF64_ST_TYPE(sym->st_info), sym->st_name);
 }

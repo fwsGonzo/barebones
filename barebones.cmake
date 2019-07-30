@@ -7,16 +7,26 @@ option(UBSAN           "Enable the undefined sanitizer" OFF)
 option(STRIPPED        "Strip the executable" OFF)
 option(DEBUG           "Build and preserve debugging information" OFF)
 option(RTTI_EXCEPTIONS "Enable C++ RTTI and exceptions" OFF)
+option(BUILD_32        "Build a 32-bit kernel" OFF)
 set(CPP_VERSION "c++17" CACHE STRING "C++ version compiler argument")
 set(C_VERSION   "gnu11" CACHE STRING "C version compiler argument")
 set(LINKER_EXE  "ld"    CACHE STRING "Linker to use")
 
+if (BUILD_32)
+	set(ELF_FORMAT "i386")
+	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
+	set(OBJCOPY_TARGET "elf32-x86-32")
+	set(TARGET_TRIPLE  "i686-pc-linux")
+	set(CAPABS "-m32")
+else()
+	set(ELF_FORMAT "x86_64")
+	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
+	set(OBJCOPY_TARGET "elf64-x86-64")
+	set(TARGET_TRIPLE  "x86_64-pc-linux")
+	set(CAPABS "-m64 -fno-omit-frame-pointer -fPIE")
+endif()
 enable_language(ASM_NASM)
-set(ELF_FORMAT "x86_64")
-set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
-set(OBJCOPY_TARGET "elf64-x86-64")
-set(TARGET_TRIPLE  "x86_64-pc-linux")
-set(CAPABS "-Wall -Wextra -g -m64 -ffreestanding -fno-omit-frame-pointer -fPIE")
+set(CAPABS "${CAPABS} -Wall -Wextra -g -ffreestanding")
 
 # Optimization flags
 set(OPTIMIZE "-mfpmath=sse -msse3")
@@ -102,8 +112,13 @@ ExternalProject_Add(exceptions
 		)
 
 # gcc-9 --print-file-name libgcc.a
-execute_process(COMMAND ${CMAKE_C_COMPILER} --print-file-name libgcc_eh.a
+if (BUILD_32)
+execute_process(COMMAND ${CMAKE_C_COMPILER} -m32 --print-file-name libgcc_eh.a
 				OUTPUT_VARIABLE LIBGCC_ARCHIVE OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+execute_process(COMMAND ${CMAKE_C_COMPILER} -m64 --print-file-name libgcc_eh.a
+				OUTPUT_VARIABLE LIBGCC_ARCHIVE OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
 
 add_library(libgcc STATIC IMPORTED)
 set_target_properties(libgcc PROPERTIES LINKER_LANGUAGE CXX)

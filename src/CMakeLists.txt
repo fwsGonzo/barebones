@@ -16,8 +16,17 @@ set(KERNEL_SOURCES
 	kernel/panic.cpp
 	# .asm files (for NASM)
 	kernel/start.asm
-	kernel/start64.asm
   )
+if (BUILD_32)
+	list(APPEND KERNEL_SOURCES
+	  	kernel/start32.c
+		crt/udiv.c
+	)
+else()
+	list(APPEND KERNEL_SOURCES
+  		kernel/start64.asm
+	)
+endif()
 
 add_library(kernel STATIC ${KERNEL_SOURCES})
 target_include_directories(kernel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
