@@ -42,4 +42,11 @@ popd
 
 # NOTE: if building with -march=native, make sure to enable KVM,
 # as emulated qemu only supports up to SSE3 instructions
-qemu-system-x86_64 $KVM -kernel tools/chainloader -initrd $BINARY $GRAPHICS
+CLASS=`od -An -t x1 -j 4 -N 1 $BINARY`
+if [ $CLASS == "02" ]; then
+	echo "Starting 64-bit kernel: $BINARY"
+	qemu-system-x86_64 $KVM -kernel tools/chainloader -initrd $BINARY $GRAPHICS
+else
+	echo "Starting 32-bit kernel: $BINARY"
+	qemu-system-x86_64 $KVM -kernel $BINARY $GRAPHICS
+fi

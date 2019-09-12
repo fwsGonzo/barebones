@@ -86,8 +86,8 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> -o <TARGET> <LINK_FLAGS> <OBJECTS>
 
 set(BBPATH ${CMAKE_CURRENT_LIST_DIR})
 
+# linker arguments
 string(RANDOM LENGTH 16 ALPHABET 0123456789abcdef SSP_VALUE)
-# Add --eh-frame-hdr for exception tables
 set(LDSCRIPT "${BBPATH}/src/linker.ld")
 set(LDFLAGS "-static -nostdlib -N -melf_${ELF_FORMAT} --script=${LDSCRIPT} --defsym __SSP__=0x${SSP_VALUE}")
 if (NOT DEBUG AND STRIPPED)
@@ -136,6 +136,7 @@ if (RTTI_EXCEPTIONS)
 	set_target_properties(cxxabi PROPERTIES IMPORTED_LOCATION exceptions/src/exceptions/libc++abi.a)
 	add_dependencies(cxxabi exceptions)
 
+	# Add --eh-frame-hdr for exception tables
 	set(LDFLAGS "${LDFLAGS} --eh-frame-hdr")
 	set(CXX_ABI_LIBS cxxabi)
 endif()

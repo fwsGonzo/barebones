@@ -2,7 +2,8 @@
  * Inspired from the IncludeOS unikernel (https://github.com/hioa-cs/IncludeOS)
  *
  * This is the smallest possible linker script that supports
- * normal C and C++ operation, including global constructors
+ * normal C and C++ operation, including global constructors,
+ * exceptions and linker GC sections option.
 **/
 ENTRY(_start)
 
@@ -37,7 +38,7 @@ SECTIONS
   {
     PROVIDE_HIDDEN (__init_array_start = .);
     KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
-    KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
+    KEEP (*(.init_array .ctors))
     PROVIDE_HIDDEN (__init_array_end = .);
   }
   /*.fini_array :
