@@ -2,6 +2,7 @@
 set(KERNEL_SOURCES
 	# .c files
 	kernel/kernel_start.c
+	kernel/init_libc.c
 	hw/serial1.c
 	crt/c_abi.c
 	crt/c_stubs.c
