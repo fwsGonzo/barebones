@@ -32,7 +32,7 @@ MACHINE=machines/${1-default}
 BUILD_DIR=$MACHINE/build
 
 pushd $MACHINE
-mkdir -p $BUILD_DIR
+mkdir -p build
 pushd build
 cmake ..
 make -j4 $OPTION
