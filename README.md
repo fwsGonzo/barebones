@@ -83,6 +83,8 @@ Returned from kernel_start! Halting...
 	- There could be a genuine issue, so let me know.
 - I'm having problems compiling or linking when using exceptions!
 	- Make sure that you use your own exceptions, and don't rely on anything that belongs to the C++ standard library, which is not present
+- I keep getting errors about not finding `bits/c++config.h` when building for 32-bit!
+	- You will need to install the C++ multilib package for your compiler, such as `g++-8-multilib`.
 
 ## Undefined sanitizer
 
