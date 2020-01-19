@@ -2,7 +2,8 @@
 
 - Intended for beginner OS development
 - Run the dependency installation script (or install the equivalent packages)
-- Build and boot kernel in Qemu with `./run.sh default`.
+- Build and boot a tiny test kernel in Qemu with `./run.sh default`.
+	- There is a 32-bit test kernel as well: `./run.sh 32bit`
 	- You can run any of the machines in the `machines` folder this way.
 - If building with the NATIVE option (or anything that requires AVX), remember to run with KVM enabled (./run.sh --kvm) so that Qemu will present the modern instruction set features to the guest operating system.
 - VGA textmode using ./run.sh --vga (NOTE: you must implement VGA support yourself! You will (if you're lucky) see a black screen.)
